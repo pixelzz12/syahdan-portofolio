@@ -1,0 +1,171 @@
+{
+  "revision": "v1",
+  "inputRoot": "assets/source",
+  "outputRoot": "public/assets",
+  "manifest": "src/data/assets.generated.json",
+  "report": "asset-report.json",
+  "assets": [
+    {
+      "id": "syahdan",
+      "kind": "profile",
+      "source": "profile/syahdan.jpg"
+    },
+    {
+      "id": "personal",
+      "kind": "projects",
+      "source": "projects/personal.png"
+    },
+    {
+      "id": "campus-expo",
+      "kind": "projects",
+      "source": "projects/campus-expo.png"
+    },
+    {
+      "id": "coding",
+      "kind": "projects",
+      "source": "projects/coding.png"
+    },
+    {
+      "id": "ui-ux",
+      "kind": "projects",
+      "source": "projects/ui-ux.png"
+    },
+    {
+      "id": "photo-01",
+      "kind": "photography",
+      "source": "photography/photo-01.jpg",
+      "before": "photography/grading/photo-01-before.jpg",
+      "framingConfirmed": false
+    },
+    {
+      "id": "photo-02",
+      "kind": "photography",
+      "source": "photography/photo-02.jpg",
+      "before": "photography/grading/photo-02-before.jpg",
+      "framingConfirmed": false
+    },
+    {
+      "id": "photo-03",
+      "kind": "photography",
+      "source": "photography/photo-03.jpg",
+      "before": "photography/grading/photo-03-before.jpg",
+      "framingConfirmed": false
+    },
+    {
+      "id": "photo-04",
+      "kind": "photography",
+      "source": "photography/photo-04.jpg",
+      "before": "photography/grading/photo-04-before.jpg",
+      "framingConfirmed": false
+    },
+    {
+      "id": "photo-05",
+      "kind": "photography",
+      "source": "photography/photo-05.jpg",
+      "before": "photography/grading/photo-05-before.jpg",
+      "framingConfirmed": false
+    },
+    {
+      "id": "photo-06",
+      "kind": "photography",
+      "source": "photography/photo-06.jpg",
+      "before": "photography/grading/photo-06-before.jpg",
+      "framingConfirmed": false
+    },
+    {
+      "id": "photo-07",
+      "kind": "photography",
+      "source": "photography/photo-07.jpg",
+      "before": "photography/grading/photo-07-before.jpg",
+      "framingConfirmed": false
+    },
+    {
+      "id": "photo-08",
+      "kind": "photography",
+      "source": "photography/photo-08.jpg",
+      "before": "photography/grading/photo-08-before.jpg",
+      "framingConfirmed": false
+    },
+    {
+      "id": "photo-09",
+      "kind": "photography",
+      "source": "photography/photo-09.jpg",
+      "before": "photography/grading/photo-09-before.jpg",
+      "framingConfirmed": false
+    },
+    {
+      "id": "photo-10",
+      "kind": "photography",
+      "source": "photography/photo-10.jpg",
+      "before": "photography/grading/photo-10-before.jpg",
+      "framingConfirmed": false
+    },
+    {
+      "id": "photo-11",
+      "kind": "photography",
+      "source": "photography/photo-11.jpg",
+      "before": "photography/grading/photo-11-before.jpg",
+      "framingConfirmed": false
+    },
+    {
+      "id": "photo-12",
+      "kind": "photography",
+      "source": "photography/photo-12.jpg",
+      "before": "photography/grading/photo-12-before.jpg",
+      "framingConfirmed": false
+    },
+    {
+      "id": "photo-13",
+      "kind": "photography",
+      "source": "photography/photo-13.jpg",
+      "before": "photography/grading/photo-13-before.jpg",
+      "framingConfirmed": false
+    },
+    {
+      "id": "photo-14",
+      "kind": "photography",
+      "source": "photography/photo-14.jpg",
+      "before": "photography/grading/photo-14-before.jpg",
+      "framingConfirmed": false
+    },
+    {
+      "id": "photo-15",
+      "kind": "photography",
+      "source": "photography/photo-15.jpg",
+      "before": "photography/grading/photo-15-before.jpg",
+      "framingConfirmed": false
+    },
+    {
+      "id": "photo-16",
+      "kind": "photography",
+      "source": "photography/photo-16.jpg",
+      "before": "photography/grading/photo-16-before.jpg",
+      "framingConfirmed": false
+    },
+    {
+      "id": "esp32-oled",
+      "kind": "experiments",
+      "source": "experiments/esp32-oled.jpg"
+    },
+    {
+      "id": "arduino",
+      "kind": "experiments",
+      "source": "experiments/arduino.jpg"
+    },
+    {
+      "id": "local-llm",
+      "kind": "research",
+      "source": "research/local-llm.jpg"
+    },
+    {
+      "id": "homelab",
+      "kind": "research",
+      "source": "research/homelab.jpg"
+    },
+    {
+      "id": "unair-official",
+      "kind": "logos",
+      "source": "logos/unair-official.svg"
+    }
+  ]
+}

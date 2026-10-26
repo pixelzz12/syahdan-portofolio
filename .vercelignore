@@ -1,0 +1,8 @@
+.git/
+.next/
+node_modules/
+.qa/
+assets/source/
+.env*
+asset-report.json
+*.tsbuildinfo
