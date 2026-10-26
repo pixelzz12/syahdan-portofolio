@@ -1,0 +1,284 @@
+{
+  "source": "Simple Icons 11.15.0; per-icon fallback 15.0.0",
+  "license": "CC0-1.0 (trademarks remain with their owners)",
+  "artworkModified": false,
+  "displaySizeOnly": "SVG width/height set to 128",
+  "icons": [
+    {
+      "slug": "html5",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/11.15.0/icons/html5.svg",
+      "license": "CC0-1.0",
+      "available": true
+    },
+    {
+      "slug": "typescript",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/11.15.0/icons/typescript.svg",
+      "license": "CC0-1.0",
+      "available": true
+    },
+    {
+      "slug": "css3",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/11.15.0/icons/css3.svg",
+      "license": "CC0-1.0",
+      "available": true
+    },
+    {
+      "slug": "javascript",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/11.15.0/icons/javascript.svg",
+      "license": "CC0-1.0",
+      "available": true
+    },
+    {
+      "slug": "php",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/11.15.0/icons/php.svg",
+      "license": "CC0-1.0",
+      "available": true
+    },
+    {
+      "slug": "nextdotjs",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/11.15.0/icons/nextdotjs.svg",
+      "license": "CC0-1.0",
+      "available": true
+    },
+    {
+      "slug": "react",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/11.15.0/icons/react.svg",
+      "license": "CC0-1.0",
+      "available": true
+    },
+    {
+      "slug": "laravel",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/11.15.0/icons/laravel.svg",
+      "license": "CC0-1.0",
+      "available": true
+    },
+    {
+      "slug": "tailwindcss",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/11.15.0/icons/tailwindcss.svg",
+      "license": "CC0-1.0",
+      "available": true
+    },
+    {
+      "slug": "bootstrap",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/11.15.0/icons/bootstrap.svg",
+      "license": "CC0-1.0",
+      "available": true
+    },
+    {
+      "slug": "threedotjs",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/11.15.0/icons/threedotjs.svg",
+      "license": "CC0-1.0",
+      "available": true
+    },
+    {
+      "slug": "greensock",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/11.15.0/icons/greensock.svg",
+      "license": "CC0-1.0",
+      "available": true
+    },
+    {
+      "slug": "nodedotjs",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/11.15.0/icons/nodedotjs.svg",
+      "license": "CC0-1.0",
+      "available": true
+    },
+    {
+      "slug": "github",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/11.15.0/icons/github.svg",
+      "license": "CC0-1.0",
+      "available": true
+    },
+    {
+      "slug": "npm",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/11.15.0/icons/npm.svg",
+      "license": "CC0-1.0",
+      "available": true
+    },
+    {
+      "slug": "git",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/11.15.0/icons/git.svg",
+      "license": "CC0-1.0",
+      "available": true
+    },
+    {
+      "slug": "visualstudiocode",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/11.15.0/icons/visualstudiocode.svg",
+      "license": "CC0-1.0",
+      "available": true
+    },
+    {
+      "slug": "openjdk",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/11.15.0/icons/openjdk.svg",
+      "license": "CC0-1.0",
+      "available": true
+    },
+    {
+      "slug": "python",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/11.15.0/icons/python.svg",
+      "license": "CC0-1.0",
+      "available": true
+    },
+    {
+      "slug": "vite",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/11.15.0/icons/vite.svg",
+      "license": "CC0-1.0",
+      "available": true
+    },
+    {
+      "slug": "c",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/11.15.0/icons/c.svg",
+      "license": "CC0-1.0",
+      "available": true
+    },
+    {
+      "slug": "mysql",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/11.15.0/icons/mysql.svg",
+      "license": "CC0-1.0",
+      "available": true
+    },
+    {
+      "slug": "arduino",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/11.15.0/icons/arduino.svg",
+      "license": "CC0-1.0",
+      "available": true
+    },
+    {
+      "slug": "cplusplus",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/11.15.0/icons/cplusplus.svg",
+      "license": "CC0-1.0",
+      "available": true
+    },
+    {
+      "slug": "phpmyadmin",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/11.15.0/icons/phpmyadmin.svg",
+      "license": "CC0-1.0",
+      "available": true
+    },
+    {
+      "slug": "mongodb",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/11.15.0/icons/mongodb.svg",
+      "license": "CC0-1.0",
+      "available": true
+    },
+    {
+      "slug": "sqlite",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/11.15.0/icons/sqlite.svg",
+      "license": "CC0-1.0",
+      "available": true
+    },
+    {
+      "slug": "postgresql",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/11.15.0/icons/postgresql.svg",
+      "license": "CC0-1.0",
+      "available": true
+    },
+    {
+      "slug": "micropython",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/11.15.0/icons/micropython.svg",
+      "license": "CC0-1.0",
+      "available": true
+    },
+    {
+      "slug": "raspberrypi",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/11.15.0/icons/raspberrypi.svg",
+      "license": "CC0-1.0",
+      "available": true
+    },
+    {
+      "slug": "express",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/11.15.0/icons/express.svg",
+      "license": "CC0-1.0",
+      "available": true
+    },
+    {
+      "slug": "espressif",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/11.15.0/icons/espressif.svg",
+      "license": "CC0-1.0",
+      "available": true
+    },
+    {
+      "slug": "bluetooth",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/11.15.0/icons/bluetooth.svg",
+      "license": "CC0-1.0",
+      "available": true
+    },
+    {
+      "slug": "adobeillustrator",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/11.15.0/icons/adobeillustrator.svg",
+      "license": "CC0-1.0",
+      "available": true
+    },
+    {
+      "slug": "adobephotoshop",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/11.15.0/icons/adobephotoshop.svg",
+      "license": "CC0-1.0",
+      "available": true
+    },
+    {
+      "slug": "mqtt",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/11.15.0/icons/mqtt.svg",
+      "license": "CC0-1.0",
+      "available": true
+    },
+    {
+      "slug": "canva",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/11.15.0/icons/canva.svg",
+      "license": "CC0-1.0",
+      "available": true
+    },
+    {
+      "slug": "figma",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/11.15.0/icons/figma.svg",
+      "license": "CC0-1.0",
+      "available": true
+    },
+    {
+      "slug": "adobelightroom",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/11.15.0/icons/adobelightroom.svg",
+      "license": "CC0-1.0",
+      "available": true
+    },
+    {
+      "slug": "capcut",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/15.0.0/icons/capcut.svg",
+      "available": false,
+      "error": "Error: HTTP 404"
+    },
+    {
+      "slug": "adobeaftereffects",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/11.15.0/icons/adobeaftereffects.svg",
+      "license": "CC0-1.0",
+      "available": true
+    },
+    {
+      "slug": "davinciresolve",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/11.15.0/icons/davinciresolve.svg",
+      "license": "CC0-1.0",
+      "available": true
+    },
+    {
+      "slug": "adobepremierepro",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/11.15.0/icons/adobepremierepro.svg",
+      "license": "CC0-1.0",
+      "available": true
+    },
+    {
+      "slug": "ollama",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/15.0.0/icons/ollama.svg",
+      "license": "CC0-1.0",
+      "available": true
+    },
+    {
+      "slug": "docker",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/11.15.0/icons/docker.svg",
+      "license": "CC0-1.0",
+      "available": true
+    },
+    {
+      "slug": "linux",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/11.15.0/icons/linux.svg",
+      "license": "CC0-1.0",
+      "available": true
+    }
+  ]
+}
