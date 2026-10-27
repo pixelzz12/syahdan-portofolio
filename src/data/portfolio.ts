@@ -7,7 +7,7 @@ export type Photo = { id: string; title: string; alt: string; category: PhotoCat
 export type PhotoSlot = { id: string; category: PhotoCategory; photo: Photo | null };
 export type Contact = { label: string; value: string; url: string };
 export type ContactKind = "email" | "github" | "instagram";
-export const contactChannels: Record<ContactKind, string | null> = { email: "syahdanherdhiyanta12@gmail.com", github: null, instagram: "https://instagram.com/syhdaan12" };
+export const contactChannels: Record<ContactKind, string | null> = { email: "syahdanherdhiyanta12@gmail.com", github: null, instagram: "https://instagram.com/syhdaann12" };
 
 export const profile = {
   name: "Muhammad Syahdan Herdhiyanta",

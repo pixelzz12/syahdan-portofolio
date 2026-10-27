@@ -16,11 +16,13 @@ export function useCorridorScroll(track: React.RefObject<HTMLElement | null>, pr
   }, [progress,onProgress]);
   useEffect(() => {
     if (!enabled || !track.current) { initialized.current = false; return; }
+    const previousBehavior=document.documentElement.style.scrollBehavior;
+    document.documentElement.style.scrollBehavior="auto";
     span.current = Math.max(1,(track.current.offsetHeight-window.innerHeight)/3);
     restore(initialized.current ? progress.current : 0); initialized.current = true;
     const read = () => {
       if (lockedRef.current) return;
-      const y = window.scrollY;
+      const y = Math.max(0,Math.min(window.scrollY,track.current!.offsetHeight-window.innerHeight));
       const value = offset.current + y/span.current - 1 + scrollBias.current;
       progress.current = value; onProgress(value);
       if (y > span.current*2.25) { offset.current++; window.scrollTo({ top:y-span.current,behavior:"instant" });scrollBias.current=value-(offset.current+window.scrollY/span.current-1); }
@@ -32,7 +34,7 @@ export function useCorridorScroll(track: React.RefObject<HTMLElement | null>, pr
       if (event.key === "Home" || event.key === "End") { event.preventDefault(); restore(Math.floor(progress.current)+(event.key==="End"?0.96:0)); }
     };
     window.addEventListener("scroll",read,{passive:true}); window.addEventListener("resize",resize); window.addEventListener("keydown",key);
-    return () => { window.removeEventListener("scroll",read); window.removeEventListener("resize",resize); window.removeEventListener("keydown",key); };
+    return () => { document.documentElement.style.scrollBehavior=previousBehavior;window.removeEventListener("scroll",read); window.removeEventListener("resize",resize); window.removeEventListener("keydown",key); };
   },[enabled,track,progress,restore,onProgress]);
   return restore;
 }

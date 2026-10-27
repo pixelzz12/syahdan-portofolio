@@ -1,5 +1,25 @@
 # Verifikasi NOVA NODE
 
+## Scroll stop, curved avatar, and EV idle update
+
+Production build and TypeScript passed. `scripts/scroll-motion-test.cjs` verifies large forward/reverse targets settle exactly with zero residual velocity for both corridor and room damping. Browser checks in `.qa/check-scroll-ev.cjs` passed large repeated wheel input, reversal, a native touch swipe, stable camera/scroll after input stops, the corrected `syhdaann12` Instagram URL, and all six Read Mode sectors. EV's actual blink, arm-wave envelope and code bubble were observed on the rendered scene; `.qa/ev-idle-bubble.png` was visually reviewed. Idle sequences are local scripts and do not invoke an AI service.
+
+`.qa/check-arrival-motion.cjs` passed desktop and touch mobile, including reduced motion, avatar travel left and forward along an arc, individually staggered letter arcs inside wall bounds, fading centered H, reverse-scroll restoration, physical avatar profile entry/return, no horizontal overflow and no uncaught browser errors.
+
+## Flat pixel title, illustrated operator and wall details
+
+Replaced the extruded title with original flat bitmap lettering reading **SYAHDAN / PORTFOLIO WEBSITE**, preserving its world placement and lightweight proximity blur. Added six sparse procedural wall-note clusters: field sketches, service diagrams and a light study with tape and small maintenance shelves, positioned outside all door openings. No reference-site art or project photographs were imported.
+
+Added the original hand-painted illustrated avatar requested by the owner: medium-long curtain hair, industrial jacket and a camera. Its transparent WebP is 683 × 1024 and 84,594 bytes. It stands beside EV and opens Operator’s Quarters when selected in the corridor. The real portrait remains unconfigured; the illustration is not represented as an authentic photo. Generation/edit prompts and paths are recorded in `AVATAR_ASSET.md`.
+
+Production build including TypeScript passed. Focused Chromium checks passed on desktop and touch mobile: avatar asset loading and physical avatar selection, profile details, exact saved-position return, all six interiors and first-object inspections, loop after the decorated atrium, Read Mode content, no horizontal overflow, and no uncaught browser errors. Screenshots `.qa/avatar-desktop.png`, `.qa/avatar-mobile.png` and `.qa/wall-details-atrium.png` were inspected. Mobile testing identified native scrollTop rounding at fractional corridor spans; a retained scroll bias now preserves the exact logical cursor on restore/recenter instead of introducing a tiny negative cycle or cumulative return drift. No camera path or room layout was redesigned.
+
+## Portfolio copy and confirmed contacts
+
+Updated the reading toggle to **Read Mode**, the main reading heading to **Portfolio**, the owner's short introduction and EV heading to **Little Friend**. Removed the requested introduction subtitle and closing thank-you paragraph. Configured owner-supplied email `syahdanherdhiyanta12@gmail.com` and Instagram `https://instagram.com/syhdaan12`; GitHub remains unconfigured and disabled. Existing contact validation is retained.
+
+Production build including TypeScript passed. Contact validation passed. Focused browser checks passed on desktop and mobile/WebGL fallback: headings, removed copy, introduction, EV title, exact mailto and Instagram URLs, one disabled GitHub control, no horizontal overflow or browser errors. The GitHub write attempt was rejected with 403; no remote files were changed. Four application files are staged locally in `.qa/github-update-copy/src/` for browser upload.
+
 ## Vercel preparation and requested title adjustment
 
 - Preserved `d700bca` and its six rooms. Only the requested title treatment and deployment preparation changed: title height 3.85 → 3.5, bundled Optimer Bold with deeper extrusion/bevel and matte side faces, locally baked proximity blur that respects reduced motion.

@@ -32,7 +32,7 @@ Impor repository ini di Vercel, pilih preset Next.js, gunakan `npm run build`, d
 - Klik pintu atau direktori. Keenam sektor membawa kamera melalui vestibule ke ruangan 3D berisi furnitur dan objek interaktif. Koridor, pintu, serta tiga ruangan pertama dipertahankan dari checkpoint `608cdc9`.
 - Di dalam ruangan, klik objek fisik atau tombol HTML yang setara untuk membaca detail. Escape dan Tutup mengembalikan tampilan detail ke ruangan. Tombol **Kembali ke koridor** atau **Keluar ke koridor** memulai perjalanan kembali ke posisi scroll semula.
 - Gunakan tiga tombol sudut pandang untuk melihat terminal kiri/kanan atau cetakan, termasuk di mobile. Ruangan memakai sudut pandang terarah; belum ada kontrol berjalan bebas/FPS.
-- Facility Directory dapat dilipat untuk memperluas pandangan. Judul SYAHDAN memakai geometri teks 3D yang dilewati kamera; keenam sektor tetap tersedia melalui direktori.
+- Facility Directory dapat dilipat untuk memperluas pandangan. Judul SYAHDAN memakai tulisan pixel datar di ruang koridor, dengan PORTFOLIO WEBSITE di bawahnya; keenam sektor tetap tersedia melalui direktori.
 - Tombol **Mode baca** langsung menampilkan seluruh konten portfolio. Tombol **Jelajahi 3D** kembali ke fasilitas.
 - Ruangan, panel, dan transisi mengunci scroll koridor. Fokus keyboard kembali ke pemicu setelah panel ditutup; native dialog membatasi fokus selama terbuka. Scroll dibuka kembali setelah keluar ke koridor.
 - Semua pintu punya tombol HTML setara dalam direktori. Tab dan Enter dapat digunakan tanpa mengklik canvas.
@@ -141,3 +141,8 @@ Arsip teknologi dan alat: **Objek → Arsip teknologi**, atau buka **Arsip tekno
 Lihat [ASSET_GUIDE.md](ASSET_GUIDE.md) untuk lokasi file, pemrosesan Sharp, versi keluaran, lisensi logo, dan integrasi data. [ASSET_CHECKLIST.md](ASSET_CHECKLIST.md) merinci aset asli yang belum disediakan. Jalankan `npm run assets:check` dan `npm run assets:build`; jangan mengganti gambar asli dengan hasil generatif. Perbandingan grading memerlukan dimensi dan framing yang cocok.
 
 Jalankan terminal dari folder repository ini, lalu `npm run dev` (bukan `npm rum dev` dari folder pengguna). Buka `http://localhost:3000/`; server harus tetap berjalan.
+
+
+Avatar ilustrasi berambut curtain dan berjaket industrial berada di samping EV; klik untuk memasuki profil. Dekorasi dinding berupa sketsa dan diagram original yang dibuat prosedural. Detail aset dan prompt tersedia di [AVATAR_ASSET.md](AVATAR_ASSET.md). Avatar ini terpisah dari foto profil asli dan arsip fotografi.
+
+Avatar kini membuka jalur dengan lengkungan ke kiri dan maju saat kamera mendekat. Kamera koridor dan perjalanan ruangan mengikuti posisi scroll terakhir tanpa antrean gerak berkecepatan tetap; uji regresi: `node scripts/scroll-motion-test.cjs`. EV memiliki kedipan, lambaian, gerakan mata dan bubble potongan kode lokal yang bervariasi, dikendalikan di `src/components/3d/EVIdle.tsx`. Semua idle dimatikan pada reduced motion. Bubble bukan keluaran AI; integrasi LLM tetap dalam pengembangan. Instagram yang dikonfigurasi: `https://instagram.com/syhdaann12`.
