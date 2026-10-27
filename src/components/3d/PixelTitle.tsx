@@ -41,7 +41,16 @@ export default function PixelTitle({reducedMotion=false,exploring=true}:{reduced
   root.current.parent.worldToLocal(local.copy(camera.position));
   if(exploring){const target=arrivalReveal(local.z);reveal.current=reducedMotion?target:THREE.MathUtils.damp(reveal.current,target,5,Math.min(delta,0.1));}
   const amount=reveal.current;
-  letters.current.forEach((letter,i)=>{if(!letter)return;const side=Math.sign(i-3),travel=letterReveal(amount,i);letter.position.x=(i-3)*0.88+side*travel*(2.2+Math.abs(i-3)*0.28);letter.position.z=-travel*Math.abs(i-3)*0.14;letter.rotation.y=reducedMotion?0:side*travel*0.08;});
+  letters.current.forEach((letter,i)=>{
+   if(!letter)return;
+   const side=Math.sign(i-3),rank=Math.abs(i-3),travel=letterReveal(amount,i),angle=travel*Math.PI/2;
+   // Elliptical arcs: lateral travel stops inside the wall, then bends forward.
+   const start=rank*0.88,edge=1.75+rank*0.55;
+   letter.position.x=side*(start+(edge-start)*Math.sin(angle));
+   letter.position.z=(3.2+(3-rank)*0.45)*(1-Math.cos(angle));
+   letter.rotation.y=reducedMotion?0:-side*angle*0.55;
+   (letter.material as THREE.MeshBasicMaterial).opacity=i===3?1-amount:1;
+  });
   if(subtitle.current)subtitle.current.opacity=1-amount;
  });
  return <group ref={root} name="spatial-syahdan-title" position={[0.4,2.85,2.2]} userData={{lettering:"pixel-flat-separated",subtitle:"PORTFOLIO WEBSITE"}}>
