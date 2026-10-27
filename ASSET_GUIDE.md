@@ -25,7 +25,7 @@ The inspection desk also accepts two local JPEG, PNG, WebP or AVIF files, up to 
 
 ## Official Universitas Airlangga logo
 
-The user supplied `D:/Logo-UNAIR.png`. A proportionally resized 768px PNG is published at `public/assets/logos/unair-official.png`, configured through `profile.universityLogo`. The supplied artwork is displayed unchanged in the arrival-area projection, Operator's Quarters education plaque, and Read Mode education section. The projection adds a restrained teal surround without recoloring or tracing the logo. Replace this file to update the artwork; do not generate or imitate the university logo.
+The user supplied `D:/Logo-UNAIR.png`. A proportionally resized 768px PNG is published at `public/assets/logos/unair-official.png`, configured through `profile.universityLogo`. The supplied artwork is displayed unchanged in the arrival-area wall plaque, Operator's Quarters education plaque, and Read Mode education section. The matte plaque mounts directly on the right corridor wall; no hologram or projector is used. Replace this file to update the artwork; do not generate or imitate the university logo.
 
 ## Technology Archive
 

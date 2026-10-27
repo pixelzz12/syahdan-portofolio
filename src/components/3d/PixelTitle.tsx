@@ -2,7 +2,7 @@
 import {useEffect,useMemo,useRef} from "react";
 import {useFrame} from "@react-three/fiber";
 import * as THREE from "three";
-import {arrivalReveal} from "@/lib/arrival-motion";
+import {arrivalReveal,letterReveal} from "@/lib/arrival-motion";
 
 const glyphs:Record<string,string[]>={
  A:["01110","11011","11011","11111","11011","11011","11011"],
@@ -39,9 +39,9 @@ export default function PixelTitle({reducedMotion=false,exploring=true}:{reduced
  useEffect(()=>()=>{maps.forEach(map=>map.dispose());caption.dispose();},[maps,caption]);
  useFrame(({camera},delta)=>{if(!root.current?.parent)return;
   root.current.parent.worldToLocal(local.copy(camera.position));
-  if(exploring){const target=arrivalReveal(local.z);reveal.current=reducedMotion?target:THREE.MathUtils.damp(reveal.current,target,8,Math.min(delta,0.1));}
+  if(exploring){const target=arrivalReveal(local.z);reveal.current=reducedMotion?target:THREE.MathUtils.damp(reveal.current,target,5,Math.min(delta,0.1));}
   const amount=reveal.current;
-  letters.current.forEach((letter,i)=>{if(!letter)return;const side=i<4?-1:1;letter.position.x=(i-3)*0.88+side*amount*(2.7+Math.abs(i-3)*0.12);letter.position.z=-amount*Math.abs(i-3)*0.14;letter.rotation.y=reducedMotion?0:side*amount*0.12;});
+  letters.current.forEach((letter,i)=>{if(!letter)return;const side=Math.sign(i-3),travel=letterReveal(amount,i);letter.position.x=(i-3)*0.88+side*travel*(2.2+Math.abs(i-3)*0.28);letter.position.z=-travel*Math.abs(i-3)*0.14;letter.rotation.y=reducedMotion?0:side*travel*0.08;});
   if(subtitle.current)subtitle.current.opacity=1-amount;
  });
  return <group ref={root} name="spatial-syahdan-title" position={[0.4,2.85,2.2]} userData={{lettering:"pixel-flat-separated",subtitle:"PORTFOLIO WEBSITE"}}>

@@ -3,7 +3,7 @@ import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { type RoomAction } from "@/data/rooms";
-import { Box, Sign } from "./Primitives";
+import { Box } from "./Primitives";
 import { Hotspot } from "./RoomProps";
 export default function MaintenanceRobot({ reducedMotion, position = [-2.5, 0, 3.2], action, onObject, scale = 1 }: { reducedMotion: boolean; position?: [number, number, number]; action?: RoomAction; onObject?: (action: RoomAction) => void; scale?: number }) {
   const robot = useRef<THREE.Group>(null);
@@ -22,7 +22,6 @@ export default function MaintenanceRobot({ reducedMotion, position = [-2.5, 0, 3
       <mesh position={[0.24, 1.72, 0]}><sphereGeometry args={[0.055, 8, 8]} /><meshStandardMaterial color="#be9660" /></mesh>
     </group>
     {action && onObject && <Hotspot action={action} position={[0, 1, 0.12]} size={[1.05, 1.7, 0.8]} onObject={onObject} />}
-    <group position={[0, 0.08, 0.85]} rotation={[-Math.PI / 2, 0, 0]}><Sign title="EV / prototype" width={1.3} height={0.35} /></group>
   </group>;
 }
 
