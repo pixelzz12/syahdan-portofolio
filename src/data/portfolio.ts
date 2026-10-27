@@ -18,7 +18,7 @@ export const profile = {
   faculty: "Fakultas Vokasi",
   program: "Teknik Informatika",
   portrait: null as string | null,
-  universityLogo: null as string | null,
+  universityLogo: "/assets/logos/unair-official.png" as string | null,
 };
 
 export const sectors: Sector[] = [

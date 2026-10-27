@@ -13,6 +13,7 @@ import MaintenanceRobot from "./MaintenanceRobot";
 import SpatialTitle from "./SpatialTitle";
 import WallDetails from "./WallDetails";
 import OperatorAvatar from "./OperatorAvatar";
+import UniversityHologram from "./UniversityHologram";
 import LoopGate from "./LoopGate";
 import PeriodicLights from "./PeriodicLights";
 import type { RoomExperience, SceneNavigation } from "@/lib/scene-navigation";
@@ -21,9 +22,21 @@ type Props = { progress:React.RefObject<number>; navigation:React.RefObject<Scen
 function Door({ item, onDoor, onObject, active, reducedMotion, copy, sceneProps }: { item: typeof placements[number]; onDoor: Props["onDoor"]; onObject: Props["onObject"]; active: boolean; reducedMotion: boolean; copy:number; sceneProps:Props }) {
   const interior = hasInterior(item.id) ? item.id : null;
   const [hovered, setHovered] = useState(false);
+  const [nearby, setNearby] = useState(false);
+  const near = useRef(false);
+  const doorway = useRef<THREE.Group>(null);
+  const frontage = useRef<THREE.Group>(null);
+  const localCamera = useRef(new THREE.Vector3());
   const left = useRef<THREE.Group>(null);
   const right = useRef<THREE.Group>(null);
-  useFrame((_, delta) => {
+  useFrame(({camera}, delta) => {
+    if (doorway.current && frontage.current) {
+      doorway.current.worldToLocal(localCamera.current.copy(camera.position));
+      const approaching = sceneProps.phase === "corridor" && Math.abs(localCamera.current.x) < (near.current ? 9 : 8.4) && localCamera.current.z > 0 && localCamera.current.z < 9;
+      if (approaching !== near.current) { near.current = approaching; setNearby(approaching); }
+      const amount = approaching || (hovered && sceneProps.phase === "corridor") ? 0.58 : 0;
+      frontage.current.position.z = reducedMotion ? amount : THREE.MathUtils.damp(frontage.current.position.z, amount, 7, delta);
+    }
     const opening = active ? 1.72 : 0.67;
     if (left.current && right.current) {
       left.current.position.x = reducedMotion ? -opening : THREE.MathUtils.damp(left.current.position.x, -opening, 6, delta);
@@ -31,7 +44,7 @@ function Door({ item, onDoor, onObject, active, reducedMotion, copy, sceneProps 
     }
   });
   const click = (event: ThreeEvent<MouseEvent>) => { event.stopPropagation(); onDoor(item.id,copy); };
-  return <group position={[item.x, 0, item.z]} rotation={[0, item.side === -1 ? Math.PI / 2 : -Math.PI / 2, 0]}>
+  return <group ref={doorway} position={[item.x, 0, item.z]} rotation={[0, item.side === -1 ? Math.PI / 2 : -Math.PI / 2, 0]}>
     {/* A real wall opening and shallow vestibule, rather than a painted-on door. */}
     <Box position={[0, -0.08, -1.65]} scale={[4.1, 0.16, 3.8]} color="#696c5f" surface="concrete" />
     {!interior && <Box position={[0, 2.4, -3.5]} scale={[4.1, 4.8, 0.2]} color="#435853" />}
@@ -41,6 +54,7 @@ function Door({ item, onDoor, onObject, active, reducedMotion, copy, sceneProps 
     {interior && active && <RoomInteriors room={interior} onObject={onObject} reducedMotion={reducedMotion} navigation={sceneProps.navigation} experience={sceneProps.experience} selectedAction={sceneProps.selectedAction} inspectionOpen={sceneProps.inspectionOpen} />}
     <mesh position={[0, 4.45, -1.9]}><boxGeometry args={[1.6, 0.06, 0.12]} /><meshBasicMaterial color={item.accent} /></mesh>
     {active && <pointLight position={[0, 3.7, -1.8]} intensity={12} distance={7} color="#dec89c" />}
+    <group ref={frontage} name={`door-front-${item.id}-${copy}`} userData={{nearby}}>
     {[-1, 1].map(side => <group key={`leaf-${side}`} ref={side === -1 ? left : right} position={[side * 0.67, 0, 0]}>
       <Box position={[0, 1.97, 0]} scale={[1.32, 3.88, 0.18]} color={hovered ? "#7b9287" : item.bay === 1 ? "#7e7861" : "#60796f"} />
       <Box position={[0, 0.44, 0.12]} scale={[1.19, 0.57, 0.045]} color="#394c48" surface="metal" />
@@ -53,7 +67,8 @@ function Door({ item, onDoor, onObject, active, reducedMotion, copy, sceneProps 
     </group>)}
     <Box position={[0, 4.16, 0.26]} scale={[3.25, 0.23, 0.4]} color="#8a8e81" />
     <Box position={[0, 0.035, 0.05]} scale={[3.3, 0.06, 1.2]} color="#a89a73" />
-    <group position={[0, 4.7, 0.27]}><Sign title={`${item.number} / ${item.name}`} subtitle={item.label} color={item.accent} /></group>
+    <group position={[0, 4.7, 0.27]}><Sign title={`${item.number} / ${item.name}`} subtitle={nearby || hovered ? "KLIK / KETUK PINTU UNTUK MASUK" : item.label} color={item.accent} /></group>
+    {(nearby || hovered) && <group position={[0, 1.3, 0.16]}><Sign title="MASUK SEKTOR  >" subtitle="KLIK / KETUK" width={1.8} height={0.5} color="#ecd4a2" /></group>}
     <Box position={[1.91, 2, 0.18]} scale={[0.3, 0.5, 0.22]} color="#343b43" />
     <mesh position={[1.92, 2.1, 0.31]}><boxGeometry args={[0.13, 0.07, 0.02]} /><meshBasicMaterial color="#c5ae78" /></mesh>
     <mesh position={[0, 4.32, 0.47]}><boxGeometry args={[1.35, 0.08, 0.1]} /><meshBasicMaterial color={hovered ? "#f2d59d" : "#bdab7b"} /></mesh>
@@ -61,6 +76,7 @@ function Door({ item, onDoor, onObject, active, reducedMotion, copy, sceneProps 
     <mesh name={`door-hit-${item.id}-${copy}`} position={[0, 2.3, 0.6]} onClick={click} onPointerOver={e => { e.stopPropagation(); setHovered(true); document.body.style.cursor = "pointer"; }} onPointerOut={() => { setHovered(false); document.body.style.cursor = ""; }}>
       <planeGeometry args={[3.4, 5.1]} /><meshBasicMaterial transparent opacity={0} depthWrite={false} />
     </mesh>
+    </group>
   </group>;
 }
 
@@ -167,7 +183,7 @@ function ServiceProps() {
 function CorridorCopy({copy,props}:{copy:number;props:Props}) {
   const group=useRef<THREE.Group>(null);
   useFrame(({camera})=>{if(group.current)group.current.visible=copy===0||(copy===1?camera.position.z<-42:camera.position.z>0)||(props.destination!==null&&props.selectedTile===copy)||(props.departingRoom!==null&&props.departingTile===copy);});
-  return <group ref={group} position={[0,0,-copy*88]}><Architecture /><WallDetails /><SpatialTitle reducedMotion={props.reducedMotion} /><LoopGate copy={copy} reducedMotion={props.reducedMotion} />{placements.map(item=><Door key={item.id} item={item} copy={copy} sceneProps={props} onDoor={props.onDoor} onObject={props.onObject} active={(props.destination===item.id&&props.selectedTile===copy)||(props.departingRoom===item.id&&props.departingTile===copy)} reducedMotion={props.reducedMotion} />)}<ServiceProps /><OperatorAvatar onSelect={()=>{if(props.phase==="corridor")props.onDoor("operator",copy);}} /><MaintenanceRobot reducedMotion={props.reducedMotion} /></group>;
+  return <group ref={group} position={[0,0,-copy*88]}><Architecture /><WallDetails /><SpatialTitle reducedMotion={props.reducedMotion} /><LoopGate copy={copy} reducedMotion={props.reducedMotion} />{placements.map(item=><Door key={item.id} item={item} copy={copy} sceneProps={props} onDoor={props.onDoor} onObject={props.onObject} active={(props.destination===item.id&&props.selectedTile===copy)||(props.departingRoom===item.id&&props.departingTile===copy)} reducedMotion={props.reducedMotion} />)}<ServiceProps /><UniversityHologram /><OperatorAvatar onSelect={()=>{if(props.phase==="corridor")props.onDoor("operator",copy);}} /><MaintenanceRobot reducedMotion={props.reducedMotion} /></group>;
 }
 function World(props: Props) {
   const { gl } = useThree();
@@ -202,3 +218,4 @@ export default function Corridor(props: Props) {
     <World {...props} />
   </Canvas>;
 }
+

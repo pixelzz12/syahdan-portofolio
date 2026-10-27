@@ -25,7 +25,7 @@ The inspection desk also accepts two local JPEG, PNG, WebP or AVIF files, up to 
 
 ## Official Universitas Airlangga logo
 
-Expected original: `assets/source/logos/unair-official.svg`. Obtain the official file from the university; none has been provided. The pipeline copies this SVG unchanged to `public/assets/optimized/v1/logos/unair-official.svg`. Set `profile.universityLogo` to that URL after verifying permission and the correct official asset. The existing education plaque remains a clearly labeled placeholder. Do not generate or trace a university logo.
+The user supplied `D:/Logo-UNAIR.png`. A proportionally resized 768px PNG is published at `public/assets/logos/unair-official.png`, configured through `profile.universityLogo`. The supplied artwork is displayed unchanged in the arrival-area projection, Operator's Quarters education plaque, and Read Mode education section. The projection adds a restrained teal surround without recoloring or tracing the logo. Replace this file to update the artwork; do not generate or imitate the university logo.
 
 ## Technology Archive
 
@@ -33,7 +33,7 @@ Edit `src/data/technologies.ts` to add, remove, reorder, hide, or update tools. 
 
 The four statuses are `Pernah Digunakan`, `Sedang Dipelajari`, `Ingin Dieksplorasi`, and `Belum Dikonfirmasi`. Only the eleven tools explicitly confirmed by the owner are marked used. No percentage-based proficiency claims are made.
 
-Technology SVGs in `public/assets/logos/technologies/` come from Simple Icons, with their pinned source URLs in `SOURCES.json` and CC0 notice in `LICENSE.md`. Marks remain the property of their owners. Re-download with `node scripts/fetch-technology-logos.mjs`. Missing logos display readable initials; SQL and general concepts intentionally have no invented corporate mark. CapCut currently needs a verified official or licensed asset. Bundled Three.js Optimer Bold (Magenta Ltd., 2004) powers the extruded 3D SYAHDAN lettering. Its original typeface metadata and license are retained in the bundled font JSON. A soft silhouette is generated locally from the same outlines for proximity blur; no remote font or postprocessing package is required. All room models, paper sheets, airplane, EV and painterly surface textures are procedural.
+Technology SVGs in `public/assets/logos/technologies/` come from Simple Icons, with their pinned source URLs in `SOURCES.json` and CC0 notice in `LICENSE.md`. Marks remain the property of their owners. Re-download with `node scripts/fetch-technology-logos.mjs`. Missing logos display readable initials; SQL and general concepts intentionally have no invented corporate mark. CapCut currently needs a verified official or licensed asset. The flat SYAHDAN title uses original bitmap glyphs generated locally in PixelTitle.tsx, with PORTFOLIO WEBSITE beneath it. It has no remote font dependency or text extrusion. The original illustrated avatar is separate from authentic photography; see AVATAR_ASSET.md for its prompt, source, optimized WebP and placement. All room models, paper sheets, airplane, EV and painterly surface textures are procedural.
 
 ## Models
 
