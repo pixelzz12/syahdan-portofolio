@@ -3,12 +3,15 @@ import { useCallback, useEffect, useRef } from "react";
 import type { RoomExperience } from "@/lib/scene-navigation";
 
 export function useCorridorScroll(track: React.RefObject<HTMLElement | null>, progress: React.RefObject<number>, enabled: boolean, locked: boolean, onProgress: (value: number) => void) {
-  const offset = useRef(0), span = useRef(1), lockedRef = useRef(locked), initialized = useRef(false);
+  const offset = useRef(0), span = useRef(1), scrollBias=useRef(0), lockedRef = useRef(locked), initialized = useRef(false);
   lockedRef.current = locked;
   const restore = useCallback((value: number) => {
     offset.current = Math.floor(value);
     progress.current = value;
     window.scrollTo({ top: span.current * (1 + value - offset.current), behavior: "instant" });
+    // Mobile browsers round scrollTop to physical pixels. Preserve the logical
+    // cursor so a subpixel restore never becomes a tiny reverse-loop step.
+    scrollBias.current=value-(offset.current+window.scrollY/span.current-1);
     onProgress(value);
   }, [progress,onProgress]);
   useEffect(() => {
@@ -18,10 +21,10 @@ export function useCorridorScroll(track: React.RefObject<HTMLElement | null>, pr
     const read = () => {
       if (lockedRef.current) return;
       const y = window.scrollY;
-      const value = offset.current + y/span.current - 1;
+      const value = offset.current + y/span.current - 1 + scrollBias.current;
       progress.current = value; onProgress(value);
-      if (y > span.current*2.25) { offset.current++; window.scrollTo({ top:y-span.current,behavior:"instant" }); }
-      else if (y < span.current*0.75) { offset.current--; window.scrollTo({ top:y+span.current,behavior:"instant" }); }
+      if (y > span.current*2.25) { offset.current++; window.scrollTo({ top:y-span.current,behavior:"instant" });scrollBias.current=value-(offset.current+window.scrollY/span.current-1); }
+      else if (y < span.current*0.75) { offset.current--; window.scrollTo({ top:y+span.current,behavior:"instant" });scrollBias.current=value-(offset.current+window.scrollY/span.current-1); }
     };
     const resize = () => { span.current = Math.max(1,(track.current!.offsetHeight-innerHeight)/3); restore(progress.current); };
     const key = (event: KeyboardEvent) => {

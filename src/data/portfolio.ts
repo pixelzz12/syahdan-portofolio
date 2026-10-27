@@ -7,13 +7,13 @@ export type Photo = { id: string; title: string; alt: string; category: PhotoCat
 export type PhotoSlot = { id: string; category: PhotoCategory; photo: Photo | null };
 export type Contact = { label: string; value: string; url: string };
 export type ContactKind = "email" | "github" | "instagram";
-export const contactChannels: Record<ContactKind, string | null> = { email: null, github: null, instagram: null };
+export const contactChannels: Record<ContactKind, string | null> = { email: "syahdanherdhiyanta12@gmail.com", github: null, instagram: "https://instagram.com/syhdaan12" };
 
 export const profile = {
   name: "Muhammad Syahdan Herdhiyanta",
   shortName: "Syahdan",
   role: "Mahasiswa & penjelajah teknologi",
-  introduction: "Halo, aku Syahdan. Aku mahasiswa Teknik Informatika di Universitas Airlangga yang suka mengeksplorasi web development, fotografi, dan berbagai eksperimen teknologi. NOVA NODE adalah tempat aku mengumpulkan karya, eksperimen, dan hal-hal yang sedang kupelajari.",
+  introduction: "Halo, aku Syahdan. Mahasiswa Teknik Informatika Universitas Airlangga yang suka mengeksplorasi berbagai eksperimen teknologi dan menyukai fotografi.",
   university: "Universitas Airlangga",
   faculty: "Fakultas Vokasi",
   program: "Teknik Informatika",
