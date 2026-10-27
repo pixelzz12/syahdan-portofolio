@@ -1,8 +1,9 @@
 import type { ContactKind, SectorId } from "./portfolio";
+import {achievements,type SecretId} from "./expansion";
 
 export type RoomId = SectorId;
 export type RoomView = "overview" | "left" | "right";
-export type RoomAction = { id: string; label: string; kind: "profile" | "interests" | "education" | "project" | "gallery" | "grading" | "photo" | "experiment" | "experiment-log" | "research" | "prototype" | "ev" | "contacts" | "contact" | "journey" | "technology" | "technology-archive"; projectId?: string; slotId?: string; channel?: ContactKind; technologyId?:string; archiveRoom?:RoomId };
+export type RoomAction = { id: string; label: string; kind: "profile" | "interests" | "education" | "project" | "gallery" | "grading" | "photo" | "experiment" | "experiment-log" | "research" | "prototype" | "ev" | "contacts" | "contact" | "journey" | "technology" | "technology-archive" | "achievement" | "cv" | "secret"; projectId?: string; slotId?: string; channel?: ContactKind; technologyId?:string; archiveRoom?:RoomId; achievementId?:string;secretId?:SecretId;unlocked?:boolean };
 export const hasInterior = (id: SectorId | null): id is RoomId => id !== null;
 export const roomActions: Record<RoomId, RoomAction[]> = {
   development: [
@@ -10,12 +11,16 @@ export const roomActions: Record<RoomId, RoomAction[]> = {
     { id: "project-campus", label: "Campus Expo", kind: "project", projectId: "campus-expo" },
     { id: "project-coding", label: "Coding", kind: "project", projectId: "coding" },
     { id: "project-design", label: "UI/UX", kind: "project", projectId: "ui-ux" },
+    { id: "secret-terminal",label:"Terminal diagnostik",kind:"secret",secretId:"terminal" },
   ],
   operator: [
     { id: "profile-terminal", label: "Profil operator", kind: "profile" },
     { id: "operator-camera", label: "Kamera & fotografi", kind: "interests" },
     { id: "operator-notebook", label: "Catatan & minat", kind: "interests" },
     { id: "university-plaque", label: "Pendidikan / UNAIR", kind: "education" },
+    { id:"cv-folder",label:"Preview & Download CV",kind:"cv" },
+    ...achievements.map(item=>({id:`achievement-${item.id}`,label:item.title,kind:"achievement" as const,achievementId:item.id})),
+    { id:"secret-polaroid",label:"Kartu di balik bingkai",kind:"secret",secretId:"polaroid" },
   ],
   film: [
     { id: "photo-archive", label: "Buka arsip foto", kind: "gallery" },
@@ -25,12 +30,15 @@ export const roomActions: Record<RoomId, RoomAction[]> = {
     { id: "experiment-esp32", label: "ESP32-C3 / OLED", kind: "experiment", projectId: "esp32-oled" },
     { id: "experiment-arduino", label: "Eksperimen Arduino", kind: "experiment", projectId: "arduino" },
     { id: "experiment-ledger", label: "Status eksperimen", kind: "experiment-log" },
+    {id:"secret-ev",label:"Sapa EV",kind:"secret",secretId:"ev"},
+    {id:"secret-circuit",label:"Uji sirkuit kecil",kind:"secret",secretId:"circuit"},
   ],
   research: [
     { id: "research-laptop", label: "Asisten LLM lokal", kind: "research", projectId: "local-llm" },
     { id: "homelab-rack", label: "Homelab server", kind: "research", projectId: "homelab" },
     { id: "ai-core", label: "Proyeksi AI / prototipe", kind: "prototype" },
     { id: "ev-robot", label: "EV / rencana integrasi", kind: "ev" },
+    {id:"secret-relay",label:"Sinyal dari meja riset",kind:"secret",secretId:"relay"},
   ],
   transmission: [
     { id: "contact-terminal", label: "Terminal kontak", kind: "contacts" },

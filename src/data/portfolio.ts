@@ -1,6 +1,6 @@
 export type SectorId = "operator" | "development" | "film" | "workshop" | "research" | "transmission";
 export type ProjectStatus = "Dalam pengembangan" | "Detail menyusul" | "Aset belum tersedia" | "Selesai";
-export type Project = { id?: string; title: string; description: string; status: ProjectStatus; url?: string; screenshot?: string; thumbnail?:string };
+export type Project = { id?: string; title: string; description: string; status: ProjectStatus; url?: string; screenshot?: string; thumbnail?:string;illustration?:string;illustrationThumbnail?:string;category?:string };
 export type Sector = { id: SectorId; number: string; name: string; label: string; description: string; accent: string };
 export type PhotoCategory = "Landscape" | "Street" | "Event" | "Cinematic";
 export type Photo = { id: string; title: string; alt: string; category: PhotoCategory; src: string; beforeSrc?: string; caption?: string; thumbnailSrc?:string; framingConfirmed?:boolean };
@@ -31,10 +31,10 @@ export const sectors: Sector[] = [
 ];
 
 export const developmentProjects: Project[] = [
-  { id: "personal", title: "Website personal", description: "Ruang untuk memperkenalkan diri dan mendokumentasikan karya. Rincian proyek serta tautan akan ditambahkan setelah dikonfirmasi.", status: "Detail menyusul" },
-  { id: "campus-expo", title: "Website Campus Expo", description: "Proyek website Campus Expo sedang dikembangkan. Fitur, teknologi, dan tautan publik belum dicantumkan karena belum dikonfirmasi.", status: "Dalam pengembangan" },
-  { id: "coding", title: "Eksplorasi coding", description: "Contoh kode dan repositori nyata akan ditambahkan di sini. Belum ada proyek contoh yang dipublikasikan.", status: "Detail menyusul" },
-  { id: "ui-ux", title: "Eksplorasi UI/UX", description: "Tempat untuk studi antarmuka dan proses desain. Aset dan studi kasus belum tersedia.", status: "Aset belum tersedia" },
+  { id: "personal", illustration:"/assets/illustrations/personal-sketch-v1.webp",illustrationThumbnail:"/assets/illustrations/personal-sketch-thumb-v1.webp",category:"DEVELOPMENT / SKETCHBOOK", title: "Website personal", description: "Ruang untuk memperkenalkan diri dan mendokumentasikan karya. Rincian proyek serta tautan akan ditambahkan setelah dikonfirmasi.", status: "Detail menyusul" },
+  { id: "campus-expo", illustration:"/assets/illustrations/campus-expo-sketch-v1.webp",illustrationThumbnail:"/assets/illustrations/campus-expo-sketch-thumb-v1.webp",category:"DEVELOPMENT / SKETCHBOOK", title: "Website Campus Expo", description: "Proyek website Campus Expo sedang dikembangkan. Fitur, teknologi, dan tautan publik belum dicantumkan karena belum dikonfirmasi.", status: "Dalam pengembangan" },
+  { id: "coding", illustration:"/assets/illustrations/coding-sketch-v1.webp",illustrationThumbnail:"/assets/illustrations/coding-sketch-thumb-v1.webp",category:"DEVELOPMENT / SKETCHBOOK", title: "Eksplorasi coding", description: "Contoh kode dan repositori nyata akan ditambahkan di sini. Belum ada proyek contoh yang dipublikasikan.", status: "Detail menyusul" },
+  { id: "ui-ux", illustration:"/assets/illustrations/ui-ux-sketch-v1.webp",illustrationThumbnail:"/assets/illustrations/ui-ux-sketch-thumb-v1.webp",category:"DEVELOPMENT / SKETCHBOOK", title: "Eksplorasi UI/UX", description: "Tempat untuk studi antarmuka dan proses desain. Aset dan studi kasus belum tersedia.", status: "Aset belum tersedia" },
 ];
 export const hardwareProjects: Project[] = [
   { id: "esp32-oled", title: "ESP32-C3 & OLED", description: "Eksperimen ESP32-C3 Super Mini dengan mata berkedip pada layar OLED. Foto rangkaian, kode, hasil pengujian, dan status penyelesaian belum dikonfirmasi.", status: "Detail menyusul" },

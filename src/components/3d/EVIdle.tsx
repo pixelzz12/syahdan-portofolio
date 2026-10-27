@@ -16,12 +16,16 @@ function writeBubble(canvas:HTMLCanvasElement,message:string){
 export function useEVIdle(reducedMotion:boolean){
  const robot=useRef<THREE.Group>(null),eyes=useRef<THREE.Group>(null),arm=useRef<THREE.Group>(null),bubble=useRef<THREE.Group>(null);
  const timing=useRef({blink:2,blinkAge:1,nextAction:4,actionStart:-10,count:0,kind:"wave",message:-1});
+ const pendingGreeting=useRef(false),manualUntil=useRef(0),greetingCount=useRef(0);
+ const greet=()=>{pendingGreeting.current=true;};
+ useEffect(()=>{window.addEventListener("nova:ev-greet",greet);return()=>window.removeEventListener("nova:ev-greet",greet);},[]);
  const {canvas,map,local}=useMemo(()=>{const canvas=document.createElement("canvas");canvas.width=512;canvas.height=160;writeBubble(canvas,snippets[0]);const map=new THREE.CanvasTexture(canvas);map.colorSpace=THREE.SRGBColorSpace;return{canvas,map,local:new THREE.Vector3()};},[]);
  useEffect(()=>()=>map.dispose(),[map]);
  useFrame(({clock,camera},delta)=>{
   const body=robot.current,eye=eyes.current,hand=arm.current,caption=bubble.current;if(!body||!eye||!hand||!caption)return;
-  if(reducedMotion){body.position.y=0;eye.scale.set(1,1,1);eye.position.x=0;hand.rotation.z=.12;caption.visible=false;body.userData.idle={blink:1,wave:0,bubble:false};return;}
   const now=clock.elapsedTime,t=timing.current;
+  if(pendingGreeting.current){pendingGreeting.current=false;t.kind="code";t.actionStart=now;t.nextAction=now+7;t.blinkAge=0;t.message=greetingCount.current++%3;manualUntil.current=now+3.8;writeBubble(canvas,snippets[t.message]);map.needsUpdate=true;}
+  if(reducedMotion){body.position.y=0;eye.scale.set(1,1,1);eye.position.x=0;hand.rotation.z=.12;caption.visible=now<manualUntil.current;if(caption.visible&&caption.parent){caption.parent.worldToLocal(local.copy(camera.position));caption.rotation.y=Math.atan2(local.x-caption.position.x,local.z-caption.position.z);}body.userData.idle={blink:1,wave:0,bubble:caption.visible,message:caption.visible?snippets[t.message]:null};return;}
   if(now>=t.blink){t.blinkAge=0;t.blink=now+(Math.random()<.2?.36:2.5+Math.random()*3.5);}
   // Keep a blink visible for several frames even on slower mobile GPUs.
   t.blinkAge+=Math.min(delta,.06);const blink=t.blinkAge<.22?1-.96*Math.sin(Math.PI*t.blinkAge/.22):1;
@@ -39,5 +43,5 @@ export function useEVIdle(reducedMotion:boolean){
   if(caption.visible&&caption.parent){caption.parent.worldToLocal(local.copy(camera.position));caption.rotation.y=Math.atan2(local.x-caption.position.x,local.z-caption.position.z);caption.scale.setScalar(.94+.06*THREE.MathUtils.smootherstep(elapsed,0,.35));}
   body.userData.idle={blink,wave,bubble:caption.visible,message:caption.visible?snippets[t.message]:null};
  });
- return{robot,eyes,arm,bubble,map};
+ return{robot,eyes,arm,bubble,map,greet};
 }

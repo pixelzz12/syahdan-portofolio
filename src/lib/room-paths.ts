@@ -3,7 +3,7 @@ import { roomCameras } from "@/data/rooms";
 import { fraction, type RoomExperience } from "./scene-navigation";
 export const aboutPoints = [
   { title: "Muhammad Syahdan Herdhiyanta", text: "Mahasiswa Teknik Informatika. Aku belajar lewat karya dan eksperimen." },
-  { title: "Universitas Airlangga", text: "Teknik Informatika, Fakultas Vokasi. Logo resmi menunggu aset dari pemilik." },
+  { title: "Universitas Airlangga", text: "Teknik Informatika, Fakultas Vokasi. Logo resmi tersedia pada plakat pendidikan." },
   { title: "Fotografi & warna", text: "Fotografi, komposisi, dan color grading dengan Lightroom." },
   { title: "Belajar dengan mencoba", text: "Web, perangkat lunak, dan eksperimen ESP32-C3 / OLED. Dokumentasi berkembang bersama prosesnya." },
 ];

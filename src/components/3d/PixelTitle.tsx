@@ -34,12 +34,12 @@ function lettering(text:string){
  return texture;
 }
 export default function PixelTitle({reducedMotion=false,exploring=true}:{reducedMotion?:boolean;exploring?:boolean}){
- const root=useRef<THREE.Group>(null),letters=useRef<(THREE.Mesh|null)[]>([]),subtitle=useRef<THREE.MeshBasicMaterial>(null),reveal=useRef(0);
+ const root=useRef<THREE.Group>(null),letters=useRef<(THREE.Mesh|null)[]>([]),subtitle=useRef<THREE.MeshBasicMaterial>(null),reveal=useRef(0),lastZ=useRef<number|null>(null);
  const {maps,caption,local}=useMemo(()=>({maps:[..."SYAHDAN"].map(lettering),caption:lettering("PORTFOLIO WEBSITE"),local:new THREE.Vector3()}),[]);
  useEffect(()=>()=>{maps.forEach(map=>map.dispose());caption.dispose();},[maps,caption]);
  useFrame(({camera},delta)=>{if(!root.current?.parent)return;
   root.current.parent.worldToLocal(local.copy(camera.position));
-  if(exploring){const target=arrivalReveal(local.z);reveal.current=reducedMotion?target:THREE.MathUtils.damp(reveal.current,target,5,Math.min(delta,0.1));}
+  if(exploring){const target=arrivalReveal(local.z),reset=lastZ.current===null||Math.abs(local.z-lastZ.current)>44;lastZ.current=local.z;reveal.current=reducedMotion||reset?target:THREE.MathUtils.damp(reveal.current,target,5,Math.min(delta,0.1));}
   const amount=reveal.current;
   letters.current.forEach((letter,i)=>{
    if(!letter)return;

@@ -1,5 +1,27 @@
 # SYAHDAN asset workflow
 
+## Achievement, CV, audio and project expansion
+
+Editable data: `src/data/expansion.ts`. The supplied GARUDA SMANTANG certificate is published intact as `public/assets/achievements/jejak-emas-2026.webp` with a 768px 3D thumbnail beside it. The original PNG is preserved in ignored `assets/source/achievements/jejak-emas-2026.png`. The award text, organizational role and participation entries follow the owner's supplied facts; only the first currently has a certificate image.
+
+Still needed:
+
+| Asset | Expected public path | Enable in data |
+| --- | --- | --- |
+| Authentic CV PDF | `public/documents/Syahdan_CV.pdf` | `cvDocument.src = "/documents/Syahdan_CV.pdf"` |
+| GASSMAPALA PDD document | `public/assets/achievements/gassmapala-pdd.webp` | Matching achievement `certificateSrc` |
+| OSN participation document | `public/assets/achievements/osn-informatika-2024.webp` | Matching achievement `certificateSrc` |
+| FLS3N participation document | `public/assets/achievements/fls3n-2025.webp` | Matching achievement `certificateSrc` |
+| Seven ambience loops | `public/audio/corridor.mp3`, `operator.mp3`, `development.mp3`, `film.mp3`, `workshop.mp3`, `research.mp3`, `transmission.mp3` | Set each matching `ambientTracks` URL only after adding that file |
+| Optional door/object sounds | `public/audio/door.mp3`, `object.mp3` | Set `ambientEffects.door` / `.object` |
+| Four real project URLs | No file | `developmentProjects[].url` in `src/data/portfolio.ts` |
+
+Certificate inputs can also be PNG/JPEG if their configured paths match; retain originals and optimize derivatives without changing document content. Audio must be owned or appropriately licensed; record the author, source and licence here when adding it. Keep loops short, seamless and quiet, without dominant music. MP3 is broadly supported; the Web Audio decoder also accepts supported WAV/OGG/WebM files. Ambient volume is 0.1, effects 0.055, with an 800ms crossfade. Audio remains unavailable without configured assets: no missing-file requests, no autoplay, no generated substitute audio. An explicit audio-button gesture creates the session. Hidden tabs, Read Mode, mute and unmount pause or dispose it.
+
+CV controls validate the configured PDF before enabling preview/download. With no PDF configured, both controls show an honest preparation state and no PDF URL is requested. Preview uses a same-origin PDF iframe; Download serves the original file. Browser PDF support varies, so the download remains available when a valid document is configured.
+
+Project sketches are labelled concept illustrations and do not claim to be authentic screenshots. Full prompts and source provenance are in [PROJECT_ILLUSTRATIONS.md](PROJECT_ILLUSTRATIONS.md). Configure real screenshots and thumbnails in `src/data/portfolio.ts` to supersede the sketches; configure full public HTTP(S) project URLs to enable Open Link. Missing URLs remain disabled.
+
 The site intentionally ships without invented photographs, screenshots, credentials, or contact details. All six rooms remain usable while assets are missing.
 
 ## Originals and generated files

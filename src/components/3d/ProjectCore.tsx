@@ -17,7 +17,7 @@ function ProjectSheet({index,onObject,selected,reducedMotion}:{index:number;onOb
     const group=ref.current;if(!group||!group.parent)return;
     if(selected){
       camera.getWorldDirection(tools.goal).multiplyScalar(3.1).add(camera.position);
-      tools.right.set(1,0,0).applyQuaternion(camera.quaternion).multiplyScalar(size.width<700?0:-0.75);tools.goal.add(tools.right);
+      tools.right.set(1,0,0).applyQuaternion(camera.quaternion).multiplyScalar(size.width<700?0:-1.05);tools.goal.add(tools.right);
       group.parent.worldToLocal(tools.goal);group.parent.getWorldQuaternion(tools.parentQ);tools.rotation.copy(tools.parentQ).invert().multiply(camera.quaternion);
     }else{
       tools.goal.copy(home);if(!reducedMotion)tools.goal.y+=Math.sin(clock.elapsedTime*0.55+index*1.4)*0.045;
@@ -26,11 +26,12 @@ function ProjectSheet({index,onObject,selected,reducedMotion}:{index:number;onOb
     group.position.lerp(tools.goal,reducedMotion?1:1-Math.exp(-Math.min(dt,0.1)*5));group.quaternion.slerp(tools.rotation,reducedMotion?1:1-Math.exp(-Math.min(dt,0.1)*5));
   });
   return <group ref={ref} position={home} name={`project-sheet-${project.id}`}>
-    <Box position={[0,0,0]} scale={[1.8,2.2,0.07]} color="#cbc4ac"/>
-    <Box position={[-0.76,0,0.05]} scale={[0.025,1.93,0.02]} color="#648d8b"/>
-    <group position={[0,0.35,0.045]}>{project.thumbnail?<ImagePlane src={project.thumbnail} width={1.5} height={0.9}/>:<Sign title={project.title} subtitle={project.status==="Dalam pengembangan"?"DALAM PENGEMBANGAN":"DETAIL / ASET MENYUSUL"} width={1.48} height={0.9} color="#c9b98d"/>}</group>
-    <group position={[0,-0.65,0.05]}><Sign title={`0${index+1} / BUKA PROYEK`} width={1.5} height={0.3}/></group>
-    <Hotspot action={action} position={[0,0,0.12]} size={[1.84,2.24,0.15]} onObject={onObject}/>
+    <Box position={[0,0,0]} scale={[2.85,2.05,.24]} color="#b5b49b"/>
+    <Box position={[-.1,.08,.13]} scale={[2.42,1.69,.04]} color="#3c5149"/>
+    <group position={[-.1,.08,.16]}>{project.thumbnail||project.screenshot||project.illustrationThumbnail?<ImagePlane src={project.thumbnail||project.screenshot||project.illustrationThumbnail!} width={2.29} height={1.57}/>:<Sign title={project.title} subtitle="DETAIL / ASET MENYUSUL" width={2.29} height={1.57}/>}</group>
+    {[0,1].map(i=><mesh key={i} position={[1.24,.4-i*.58,.15]} rotation={[Math.PI/2,0,0]}><cylinderGeometry args={[.11,.11,.06,12]}/><meshStandardMaterial color="#697c69" roughness={1}/></mesh>)}
+    <group position={[0,-.87,.14]}><Sign title={`SYAHDAN / ${project.title}`} subtitle={project.screenshot?"SCREENSHOT ASLI":"ILUSTRASI KONSEPTUAL"} width={2.35} height={.24}/></group>
+    <Hotspot action={action} position={[0,0,.24]} size={[2.9,2.1,.15]} onObject={onObject}/>
   </group>;
 }
 export default function ProjectCore({onObject,selected,reducedMotion}:{onObject:(action:RoomAction)=>void;selected:string|null;reducedMotion:boolean}) {

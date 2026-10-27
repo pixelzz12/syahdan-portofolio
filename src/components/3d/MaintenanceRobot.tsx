@@ -4,7 +4,7 @@ import { Box } from "./Primitives";
 import { Hotspot } from "./RoomProps";
 import {useEVIdle} from "./EVIdle";
 export default function MaintenanceRobot({ reducedMotion, position = [-2.5, 0, 3.2], action, onObject, scale = 1 }: { reducedMotion: boolean; position?: [number, number, number]; action?: RoomAction; onObject?: (action: RoomAction) => void; scale?: number }) {
-  const {robot,eyes,arm,bubble,map}=useEVIdle(reducedMotion);
+  const {robot,eyes,arm,bubble,map,greet}=useEVIdle(reducedMotion);
   return <group position={position} rotation={[0, 0.25, 0]} scale={scale}>
     <group ref={robot} name={action ? "ev-research-idle" : "ev-corridor-idle"}>
       <Box position={[0, 0.58, 0]} scale={[0.66, 0.65, 0.48]} color="#b5aa8f" />
@@ -19,7 +19,7 @@ export default function MaintenanceRobot({ reducedMotion, position = [-2.5, 0, 3
       <mesh position={[0.24, 1.72, 0]}><sphereGeometry args={[0.055, 8, 8]} /><meshStandardMaterial color="#be9660" /></mesh>
     </group>
     <group ref={bubble} name="ev-code-bubble" visible={false} position={[.55,2.3,0]}><mesh><planeGeometry args={[2.5,.78125]}/><meshBasicMaterial map={map} transparent alphaTest={.02} depthWrite={false} toneMapped={false}/></mesh></group>
-    {action && onObject && <Hotspot action={action} position={[0, 1, 0.12]} size={[1.05, 1.7, 0.8]} onObject={onObject} />}
+    {action && onObject ? <Hotspot action={action} position={[0, 1, 0.12]} size={[1.05, 1.7, 0.8]} onObject={selected=>{greet();onObject(selected);}} />:<mesh name="room-object-ev-greeting" position={[0,1,.12]} onClick={e=>{e.stopPropagation();greet();}} onPointerOver={e=>{e.stopPropagation();document.body.style.cursor="pointer";}} onPointerOut={()=>{document.body.style.cursor="";}}><boxGeometry args={[1.05,1.7,.8]}/><meshBasicMaterial transparent opacity={0} depthWrite={false}/></mesh>}
   </group>;
 }
 

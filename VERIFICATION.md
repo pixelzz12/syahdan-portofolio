@@ -1,5 +1,17 @@
 # Verifikasi NOVA NODE
 
+## Achievement wall, secrets, audio, CV, project sketches and intro stability
+
+The final production build and explicit `npm run typecheck` passed. No lint script or ESLint configuration is present in this repository, so lint is not reported as passing. No dependencies were added.
+
+`.qa/expansion-test.cjs` passed on desktop and touch mobile: CV preparation state and focus restoration, no PDF requests when unconfigured, direct physical EV click and message, all four achievement records, the authentic GARUDA SMANTANG certificate, notebook/polaroid/terminal/circuit/research notes, all six room entries and returns, Project Core monitors with disabled pending Open Link buttons, paper journey, corridor-loop intro continuity, six Read Mode sectors, no horizontal overflow, no failed asset responses and no uncaught browser errors. The same suite passed server-rendered/no-JavaScript content at 320px.
+
+`.qa/capture-achievement-wall.cjs` verified the certificate frame is visible from the right room view and that clicking its actual 3D hotspot opens certificate inspection. Screenshots of the physical wall, certificate, desktop project monitor/detail panel and mobile detail layout were visually reviewed. The supplied certificate retains its full contents and original dimensions in its detail derivative; other documentary assets remain honest placeholders.
+
+`scripts/ambient-audio-test.cjs` passed gesture-only initialization, missing-asset silence, crossfade, cache, one-shot cleanup, aborted requests, mute and disposal. `.qa/audio-browser-test.cjs` passed a real AudioContext, WAV decoding, crossfade and source cleanup, pause and close using intercepted QA-only fixtures. No placeholder sound files were published. Ambient tracks remain unconfigured until authentic, licensed assets are supplied.
+
+`.qa/intro-normal-test.cjs` passed a normal-motion corridor wrap: avatar position/yaw and full lettering are seeded directly rather than replaying an entrance tween. The scene waits for avatar asset readiness before being shown. Scroll damping and contact validation regression scripts also passed. Existing photographs and project completion statuses were preserved; newly generated project artwork is explicitly marked as concept illustration.
+
 ## Scroll stop, curved avatar, and EV idle update
 
 Production build and TypeScript passed. `scripts/scroll-motion-test.cjs` verifies large forward/reverse targets settle exactly with zero residual velocity for both corridor and room damping. Browser checks in `.qa/check-scroll-ev.cjs` passed large repeated wheel input, reversal, a native touch swipe, stable camera/scroll after input stops, the corrected `syhdaann12` Instagram URL, and all six Read Mode sectors. EV's actual blink, arm-wave envelope and code bubble were observed on the rendered scene; `.qa/ev-idle-bubble.png` was visually reviewed. Idle sequences are local scripts and do not invoke an AI service.

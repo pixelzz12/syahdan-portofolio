@@ -13,6 +13,8 @@ import PaperJourney from "./PaperJourney";
 import TechnologyWall from "./TechnologyWall";
 import type { RoomExperience,SceneNavigation } from "@/lib/scene-navigation";
 import { assetTexture } from "@/lib/assets";
+import AchievementWall from "./AchievementWall";
+import RoomExtras from "./RoomExtras";
 
 function Shell({ room }: { room: RoomId }) {
   const film = room === "film";
@@ -45,7 +47,7 @@ function Shell({ room }: { room: RoomId }) {
 
 function Development({ onObject }: { onObject: (action: RoomAction) => void }) {
   const locations: [number, number, number][] = [[-2.65, 0, -9.9], [0, 0, -10.1], [2.65, 0, -9.9], [2.65, 0, -6.25]];
-  return <>{roomActions.development.map((action, i) => {
+  return <>{roomActions.development.slice(0,4).map((action, i) => {
     const project = developmentProjects.find(item => item.id === action.projectId);
     return <group key={action.id}>
       <Desk position={locations[i]} width={i === 1 ? 2.35 : 2.1}><Monitor title={action.label} subtitle={project?.status === "Dalam pengembangan" ? "DALAM PENGEMBANGAN" : "DETAIL / ASET MENYUSUL"} action={action} screenshot={project?.screenshot} onObject={onObject} width={i === 1 ? 1.7 : 1.4} /></Desk>
@@ -114,5 +116,5 @@ function Film({ onObject }: { onObject: (action: RoomAction) => void }) {
 }
 
 export default function RoomInteriors({ room,onObject,reducedMotion,navigation,experience,selectedAction,inspectionOpen }: {room:RoomId;onObject:(action:RoomAction)=>void;reducedMotion:boolean;navigation:React.RefObject<SceneNavigation>;experience:RoomExperience;selectedAction:RoomAction|null;inspectionOpen:boolean}) {
-  return <group name={`interior-${room}`}><Shell room={room}/>{room==="development"?<ProjectCore onObject={onObject} selected={inspectionOpen?selectedAction?.id||null:null} reducedMotion={reducedMotion}/>:room==="operator"?<><Operator onObject={onObject}/><PaperJourney active={experience==="about"} navigation={navigation} onObject={onObject}/></>:room==="film"?<Film onObject={onObject}/>:room==="workshop"?<Workshop onObject={onObject}/>:room==="research"?<Research onObject={onObject} reducedMotion={reducedMotion}/>:<Transmission onObject={onObject}/>}<TechnologyWall room={room} onObject={onObject}/></group>;
+  return <group name={`interior-${room}`}><Shell room={room}/>{room==="development"?<ProjectCore onObject={onObject} selected={inspectionOpen?selectedAction?.id||null:null} reducedMotion={reducedMotion}/>:room==="operator"?<><Operator onObject={onObject}/><AchievementWall onObject={onObject} selected={inspectionOpen?selectedAction?.id||null:null} reducedMotion={reducedMotion}/><PaperJourney active={experience==="about"} navigation={navigation} onObject={onObject}/></>:room==="film"?<Film onObject={onObject}/>:room==="workshop"?<Workshop onObject={onObject}/>:room==="research"?<Research onObject={onObject} reducedMotion={reducedMotion}/>:<Transmission onObject={onObject}/>}<RoomExtras room={room} onObject={onObject} reducedMotion={reducedMotion}/><TechnologyWall room={room} onObject={onObject}/></group>;
 }

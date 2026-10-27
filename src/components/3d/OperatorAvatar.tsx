@@ -5,22 +5,26 @@ import * as THREE from "three";
 import {avatar} from "@/data/avatar";
 import {arrivalReveal} from "@/lib/arrival-motion";
 
-export default function OperatorAvatar({onSelect,reducedMotion=false,exploring=true}:{onSelect:()=>void;reducedMotion?:boolean;exploring?:boolean}){
+export default function OperatorAvatar({onSelect,reducedMotion=false,exploring=true,onLoaded}:{onSelect:()=>void;reducedMotion?:boolean;exploring?:boolean;onLoaded?:()=>void}){
  const [map,setMap]=useState<THREE.Texture|null>(null);
- const root=useRef<THREE.Group>(null),facing=useRef<THREE.Group>(null),reveal=useRef(0);const tools=useMemo(()=>({camera:new THREE.Vector3()}),[]);
- useEffect(()=>{let live=true;const texture=new THREE.TextureLoader().load(avatar.src,loaded=>{loaded.colorSpace=THREE.SRGBColorSpace;if(live)setMap(loaded);});return()=>{live=false;texture.dispose();};},[]);
+ const root=useRef<THREE.Group>(null),facing=useRef<THREE.Group>(null),reveal=useRef(0),lastZ=useRef<number|null>(null);const tools=useMemo(()=>({camera:new THREE.Vector3()}),[]);
+ useEffect(()=>{let live=true;const texture=new THREE.TextureLoader().load(avatar.src,loaded=>{loaded.colorSpace=THREE.SRGBColorSpace;if(live){setMap(loaded);onLoaded?.();}},undefined,()=>{if(live)onLoaded?.();});return()=>{live=false;texture.dispose();};},[onLoaded]);
  // A cutout illustration in world space; only its yaw follows the viewpoint.
  // Keeping the feet fixed avoids the floating-camera-facing-card effect.
  useFrame(({camera},delta)=>{const node=facing.current,actor=root.current;if(!node?.parent||!actor?.parent)return;
   const dt=Math.min(delta,0.1);
+  let resetPose=lastZ.current===null;
   if(exploring){
    actor.parent.worldToLocal(tools.camera.copy(camera.position));const target=arrivalReveal(tools.camera.z);
-   reveal.current=reducedMotion?target:THREE.MathUtils.damp(reveal.current,target,5,dt);
+   const reset=lastZ.current===null||Math.abs(tools.camera.z-lastZ.current)>44;
+   resetPose=reset;
+   lastZ.current=tools.camera.z;
+   reveal.current=reducedMotion||reset?target:THREE.MathUtils.damp(reveal.current,target,5,dt);
    const arc=reveal.current*Math.PI/2;
    actor.position.x=0.4-2.8*Math.sin(arc);actor.position.z=4+1.6*(1-Math.cos(arc));
   }
   tools.camera.copy(camera.position);node.parent.worldToLocal(tools.camera);const angle=Math.atan2(tools.camera.x-node.position.x,tools.camera.z-node.position.z);
-  const turn=Math.atan2(Math.sin(angle-node.rotation.y),Math.cos(angle-node.rotation.y));node.rotation.y=reducedMotion?angle:node.rotation.y+turn*(1-Math.exp(-6*dt));
+  const turn=Math.atan2(Math.sin(angle-node.rotation.y),Math.cos(angle-node.rotation.y));node.rotation.y=reducedMotion||resetPose?angle:node.rotation.y+turn*(1-Math.exp(-6*dt));
  });
  const image=map?.image as HTMLImageElement|undefined;
  const aspect=image?.width&&image?.height?image.width/image.height:2/3;

@@ -3,14 +3,14 @@
 import PhotographyGallery from "./PhotographyGallery";
 import TechnologyShelf from "./TechnologyShelf";
 import ContactPanel from "./ContactPanel";
+import AchievementArchive from "./AchievementArchive";
+import {CVPanel} from "./CVPanel";
+import {RoomNotes} from "./EggInspector";
+import {ProjectCard} from "./ProjectPresentation";
 import { developmentProjects, hardwareProjects, profile, researchProjects, type Project, type SectorId } from "@/data/portfolio";
 
 function Projects({ items }: { items: Project[] }) {
-  return <div className="project-grid">{items.map((project, i) => <article className="project-card" key={project.title}>
-    <div className="project-top"><span className="mono">PROJECT / 0{i + 1}</span><span className={`status ${project.status === "Dalam pengembangan" ? "wip" : ""}`}>{project.status === "Dalam pengembangan" ? "Dalam Pengembangan" : project.status}</span></div>
-    <h3>{project.title}</h3><p>{project.description}</p>
-    {project.url && <a href={project.url} target="_blank" rel="noopener noreferrer" className="text-link">Lihat proyek ↗</a>}
-  </article>)}</div>;
+  return <div className="project-grid">{items.map(project=><ProjectCard key={project.id||project.title} project={project}/>)}</div>;
 }
 
 function SectorContent({ id }: { id: SectorId }) {
@@ -20,6 +20,7 @@ function SectorContent({ id }: { id: SectorId }) {
       <div className="operator-grid"><div className="portrait-slot">{profile.portrait ? <img src={profile.portrait} alt={profile.name} /> : <><div className="operator-mark" aria-hidden="true">S<span>↗</span></div><span className="mono">OPERATOR / SYAHDAN</span><small>Foto profil belum ditambahkan</small></>}</div>
       <div className="operator-info"><span className="eyebrow">Di balik fasilitas</span><h3>{profile.name}</h3><p>{profile.role}</p><div className="education">{profile.universityLogo && <img src={profile.universityLogo} alt="Logo resmi Universitas Airlangga" width="56" height="56" />}<span className="mono">PENDIDIKAN</span><h4>{profile.university}</h4><p>{profile.faculty}<br />{profile.program}</p></div></div></div>
       <div className="interest-tags"><span>Web development</span><span>Fotografi</span><span>Eksperimen teknologi</span></div>
+      <AchievementArchive/><CVPanel/>
     </>;
     case "development": return <><p className="section-intro">Tempat ide diterjemahkan menjadi antarmuka dan kode. Beberapa masih berupa proses, dan proses itu juga bagian dari karya.</p><Projects items={developmentProjects} /></>;
     case "film": return <PhotographyGallery />;
@@ -29,4 +30,4 @@ function SectorContent({ id }: { id: SectorId }) {
   }
 }
 
-export default function PortfolioContent({id}:{id:SectorId}) { return <><SectorContent id={id}/>{["development","workshop","film","research"].includes(id)&&<TechnologyShelf room={id}/>}</>; }
+export default function PortfolioContent({id}:{id:SectorId}) { return <><SectorContent id={id}/><RoomNotes room={id}/>{["development","workshop","film","research"].includes(id)&&<TechnologyShelf room={id}/>}</>; }

@@ -17,7 +17,7 @@ export default function SectorDialog({ id, onClose, onNavigate, onExit, detail, 
     return () => { element.close(); previous?.focus({ preventScroll: true }); };
   }, []);
   useEffect(() => { dialog.current?.querySelector(".dialog-body")?.scrollTo(0, 0); }, [id]);
-  return <dialog ref={dialog} className={`sector-dialog ${inRoom ? "room-dialog" : ""}`} aria-labelledby="sector-title" onCancel={event => { event.preventDefault(); onClose(); }} onClick={event => { if (event.target === event.currentTarget) onClose(); }}>
+  return <dialog ref={dialog} className={`sector-dialog ${inRoom ? `room-dialog ${detail?.kind==="project"?"project-dialog":""}` : ""}`} aria-labelledby="sector-title" onCancel={event => { event.preventDefault(); onClose(); }} onClick={event => { if (event.target === event.currentTarget) onClose(); }}>
     <div className="dialog-frame">
       <div className="dialog-top"><span className="mono"><i className="signal-dot" /> NOVA NODE / SECTOR {sector.number}</span><button className="close-button" onClick={onClose} aria-label={inRoom ? "Tutup detail dan kembali ke ruangan" : "Tutup sektor dan kembali ke koridor"}>Tutup <span aria-hidden="true">×</span></button></div>
       <div className="dialog-body"><div className="sector-heading"><span className="sector-big-number" style={{ color: sector.accent }}>{sector.number}</span><div><span className="eyebrow">{sector.label}</span><h2 id="sector-title">{detail?.label || sector.name}</h2><p>{sector.description}</p></div></div>{detail ? <RoomDetail key={detail.id} action={detail} /> : <PortfolioContent key={id} id={id} />}</div>
