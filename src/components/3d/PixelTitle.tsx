@@ -2,6 +2,7 @@
 import {useEffect,useMemo,useRef} from "react";
 import {useFrame} from "@react-three/fiber";
 import * as THREE from "three";
+import {arrivalReveal} from "@/lib/arrival-motion";
 
 const glyphs:Record<string,string[]>={
  A:["01110","11011","11011","11111","11011","11011","11011"],
@@ -22,26 +23,29 @@ const glyphs:Record<string,string[]>={
  Y:["11011","11011","11011","01110","00100","00100","00100"],
  " ":["000","000","000","000","000","000","000"],
 };
-function lettering(blur:boolean){
- const canvas=document.createElement("canvas");canvas.width=1024;canvas.height=256;
- const ctx=canvas.getContext("2d")!;ctx.imageSmoothingEnabled=false;if(blur)ctx.filter="blur(9px)";
- const draw=(text:string,pixel:number,y:number,color:string,spacing:number)=>{
-  const width=[...text].reduce((sum,char)=>sum+(glyphs[char]?.[0].length||5)*pixel+spacing,0)-spacing;let x=(1024-width)/2;
-  ctx.fillStyle=color;for(const char of text){const rows=glyphs[char];rows?.forEach((row,j)=>[...row].forEach((bit,i)=>{if(bit==="1")ctx.fillRect(x+i*pixel,y+j*pixel,pixel,pixel);}));x+=(rows?.[0].length||5)*pixel+spacing;}
- };
- draw("SYAHDAN",20,28,"#e1dac4",14);draw("PORTFOLIO WEBSITE",5,202,"#b5c9bc",7);
- // Two restrained interface marks keep the lettering grounded in the facility.
- ctx.fillStyle="#b9a574";ctx.fillRect(30,36,4,126);ctx.fillRect(990,36,4,126);
+function lettering(text:string){
+ const canvas=document.createElement("canvas");canvas.width=text.length===1?100:1024;canvas.height=text.length===1?140:80;
+ const ctx=canvas.getContext("2d")!;ctx.imageSmoothingEnabled=false;
+ const pixel=text.length===1?18:7,spacing=text.length===1?0:10;
+ const width=[...text].reduce((sum,char)=>sum+(glyphs[char]?.[0].length||5)*pixel+spacing,0)-spacing;let x=(canvas.width-width)/2;
+ const y=(canvas.height-7*pixel)/2;ctx.fillStyle=text.length===1?"#e1dac4":"#b5c9bc";
+ for(const char of text){const rows=glyphs[char];rows?.forEach((row,j)=>[...row].forEach((bit,i)=>{if(bit==="1")ctx.fillRect(x+i*pixel,y+j*pixel,pixel,pixel);}));x+=(rows?.[0].length||5)*pixel+spacing;}
  const texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;texture.magFilter=THREE.NearestFilter;
  return texture;
 }
-export default function PixelTitle({reducedMotion=false}:{reducedMotion?:boolean}){
- const root=useRef<THREE.Group>(null),solid=useRef<THREE.MeshBasicMaterial>(null),soft=useRef<THREE.MeshBasicMaterial>(null);
- const {normal,blur,world}=useMemo(()=>({normal:lettering(false),blur:lettering(true),world:new THREE.Vector3()}),[]);
- useEffect(()=>()=>{normal.dispose();blur.dispose();},[normal,blur]);
- useFrame(({camera})=>{if(!root.current)return;root.current.getWorldPosition(world);const amount=reducedMotion||Math.abs(camera.position.x-world.x)>3?0:THREE.MathUtils.smoothstep(6-Math.abs(camera.position.z-world.z),0,4);root.current.userData.blur=amount;if(solid.current)solid.current.opacity=1-amount*0.9;if(soft.current)soft.current.opacity=amount*0.8;});
- return <group ref={root} name="spatial-syahdan-title" position={[0,3.5,5]} userData={{lettering:"pixel-flat",subtitle:"PORTFOLIO WEBSITE"}}>
-  <mesh><planeGeometry args={[5.8,1.45]}/><meshBasicMaterial ref={solid} map={normal} transparent depthWrite={false} toneMapped={false}/></mesh>
-  <mesh position={[0,0,0.005]}><planeGeometry args={[5.8,1.45]}/><meshBasicMaterial ref={soft} map={blur} transparent opacity={0} depthWrite={false} toneMapped={false}/></mesh>
+export default function PixelTitle({reducedMotion=false,exploring=true}:{reducedMotion?:boolean;exploring?:boolean}){
+ const root=useRef<THREE.Group>(null),letters=useRef<(THREE.Mesh|null)[]>([]),subtitle=useRef<THREE.MeshBasicMaterial>(null),reveal=useRef(0);
+ const {maps,caption,local}=useMemo(()=>({maps:[..."SYAHDAN"].map(lettering),caption:lettering("PORTFOLIO WEBSITE"),local:new THREE.Vector3()}),[]);
+ useEffect(()=>()=>{maps.forEach(map=>map.dispose());caption.dispose();},[maps,caption]);
+ useFrame(({camera},delta)=>{if(!root.current?.parent)return;
+  root.current.parent.worldToLocal(local.copy(camera.position));
+  if(exploring){const target=arrivalReveal(local.z);reveal.current=reducedMotion?target:THREE.MathUtils.damp(reveal.current,target,8,Math.min(delta,0.1));}
+  const amount=reveal.current;
+  letters.current.forEach((letter,i)=>{if(!letter)return;const side=i<4?-1:1;letter.position.x=(i-3)*0.88+side*amount*(2.7+Math.abs(i-3)*0.12);letter.position.z=-amount*Math.abs(i-3)*0.14;letter.rotation.y=reducedMotion?0:side*amount*0.12;});
+  if(subtitle.current)subtitle.current.opacity=1-amount;
+ });
+ return <group ref={root} name="spatial-syahdan-title" position={[0.4,2.85,2.2]} userData={{lettering:"pixel-flat-separated",subtitle:"PORTFOLIO WEBSITE"}}>
+  {maps.map((map,i)=><mesh key={i} ref={node=>{letters.current[i]=node;}} name={`arrival-letter-${i}`} position={[(i-3)*0.88,0,0]}><planeGeometry args={[0.88,1.23]}/><meshBasicMaterial map={map} transparent alphaTest={0.05} toneMapped={false}/></mesh>)}
+  <mesh position={[0,-1.05,0]}><planeGeometry args={[4,0.3125]}/><meshBasicMaterial ref={subtitle} map={caption} transparent depthWrite={false} toneMapped={false}/></mesh>
  </group>;
 }

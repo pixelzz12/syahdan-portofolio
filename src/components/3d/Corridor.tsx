@@ -183,7 +183,7 @@ function ServiceProps() {
 function CorridorCopy({copy,props}:{copy:number;props:Props}) {
   const group=useRef<THREE.Group>(null);
   useFrame(({camera})=>{if(group.current)group.current.visible=copy===0||(copy===1?camera.position.z<-42:camera.position.z>0)||(props.destination!==null&&props.selectedTile===copy)||(props.departingRoom!==null&&props.departingTile===copy);});
-  return <group ref={group} position={[0,0,-copy*88]}><Architecture /><WallDetails /><SpatialTitle reducedMotion={props.reducedMotion} /><LoopGate copy={copy} reducedMotion={props.reducedMotion} />{placements.map(item=><Door key={item.id} item={item} copy={copy} sceneProps={props} onDoor={props.onDoor} onObject={props.onObject} active={(props.destination===item.id&&props.selectedTile===copy)||(props.departingRoom===item.id&&props.departingTile===copy)} reducedMotion={props.reducedMotion} />)}<ServiceProps /><UniversityHologram /><OperatorAvatar onSelect={()=>{if(props.phase==="corridor")props.onDoor("operator",copy);}} /><MaintenanceRobot reducedMotion={props.reducedMotion} /></group>;
+  return <group ref={group} position={[0,0,-copy*88]}><Architecture /><WallDetails /><SpatialTitle reducedMotion={props.reducedMotion} exploring={props.phase==="corridor"} /><LoopGate copy={copy} reducedMotion={props.reducedMotion} />{placements.map(item=><Door key={item.id} item={item} copy={copy} sceneProps={props} onDoor={props.onDoor} onObject={props.onObject} active={(props.destination===item.id&&props.selectedTile===copy)||(props.departingRoom===item.id&&props.departingTile===copy)} reducedMotion={props.reducedMotion} />)}<ServiceProps /><UniversityHologram /><OperatorAvatar reducedMotion={props.reducedMotion} exploring={props.phase==="corridor"} onSelect={()=>{if(props.phase==="corridor")props.onDoor("operator",copy);}} /><MaintenanceRobot reducedMotion={props.reducedMotion} position={[-3.65,0,2.8]} /></group>;
 }
 function World(props: Props) {
   const { gl } = useThree();
@@ -218,4 +218,3 @@ export default function Corridor(props: Props) {
     <World {...props} />
   </Canvas>;
 }
-
