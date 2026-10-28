@@ -2,7 +2,11 @@
 
 ## Authentic profile portrait
 
-The owner supplied `Foto 1.jpg`. The original is preserved in ignored `assets/source/profile/syahdan-profile-original.jpg`. The full, uncropped photograph is optimized to `public/assets/profile/syahdan-profile-v1.webp` (720 × 960, quality 88) and configured in `profile.portrait`. It appears in the operator profile and Read Mode; the illustrated 3D avatar remains a separate illustration. No generative edits or retouching were applied.
+The current owner-supplied portrait is `IMG_8651.JPEG`. Its original is preserved in ignored `assets/source/profile/syahdan-profile-original-v2.jpeg`. The full, uncropped photograph is EXIF-oriented and optimized to `public/assets/profile/syahdan-profile-v2.webp` (720 × 960, quality 88), shared by Read Mode, Digital Profile Terminal and inspection through `profile.portrait`. The prior v1 asset is retained. No generative edits or retouching were applied; the illustrated 3D avatar remains separate.
+
+## Read Mode motion
+
+`src/components/useReadingMotion.ts` enhances only the active 2D reading view. IntersectionObserver reveals each node once; a small MutationObserver registers newly opened archive items. CSS provides the hero entrance, limited stagger, hover/focus feedback, active reading navigation and photo preview transitions. Finished card animation classes are removed so hover transforms remain available. The decorative parallax uses a passive scroll listener and one queued animation frame. Observers/listeners are disposed when returning to 3D. `prefers-reduced-motion` disables motion, and content remains visible without JavaScript or observer support. No new animation dependency is installed.
 
 ## Achievement, CV, audio and project expansion
 

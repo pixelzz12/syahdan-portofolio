@@ -1,5 +1,5 @@
 export type SectorId = "operator" | "development" | "film" | "workshop" | "research" | "transmission";
-export type ProjectStatus = "Dalam pengembangan" | "Detail menyusul" | "Aset belum tersedia" | "Selesai";
+export type ProjectStatus = "Dalam pengembangan" | "Detail menyusul" | "Aset belum tersedia" | "Selesai" | "Repositori tersedia";
 export type Project = { id?: string; title: string; description: string; status: ProjectStatus; url?: string; screenshot?: string; thumbnail?:string;illustration?:string;illustrationThumbnail?:string;category?:string };
 export type Sector = { id: SectorId; number: string; name: string; label: string; description: string; accent: string };
 export type PhotoCategory = "Landscape" | "Street" | "Event" | "Cinematic";
@@ -18,7 +18,7 @@ export const profile = {
   university: "Universitas Airlangga",
   faculty: "Fakultas Vokasi",
   program: "Teknik Informatika",
-  portrait: "/assets/profile/syahdan-profile-v1.webp" as string | null,
+  portrait: "/assets/profile/syahdan-profile-v2.webp" as string | null,
   universityLogo: "/assets/logos/unair-official.png" as string | null,
 };
 
@@ -32,6 +32,7 @@ export const sectors: Sector[] = [
 ];
 
 export const developmentProjects: Project[] = [
+  {id:"pranumerando",title:"Kalkulator Pranumerando",category:"WEB / PROYEK KELOMPOK",description:"Proyek Kelompok 2: kalkulator web untuk nilai tunai anuitas pranumerando, dengan pembayaran di awal periode. Dibangun memakai HTML, CSS, dan JavaScript; dilengkapi tabel perhitungan, grafik, serta ekspor CSV dan PDF. Kode sumber tersedia di GitHub.",status:"Repositori tersedia",url:"https://github.com/pixelzz12/pranumerando-calculator",illustration:"/assets/illustrations/pranumerando-sketch-v1.webp",illustrationThumbnail:"/assets/illustrations/pranumerando-sketch-thumb-v1.webp"},
   { id: "personal", illustration:"/assets/illustrations/personal-sketch-v1.webp",illustrationThumbnail:"/assets/illustrations/personal-sketch-thumb-v1.webp",category:"DEVELOPMENT / SKETCHBOOK", title: "Website personal", description: "Ruang untuk memperkenalkan diri dan mendokumentasikan karya. Rincian proyek serta tautan akan ditambahkan setelah dikonfirmasi.", status: "Detail menyusul" },
   { id: "campus-expo", illustration:"/assets/illustrations/campus-expo-sketch-v1.webp",illustrationThumbnail:"/assets/illustrations/campus-expo-sketch-thumb-v1.webp",category:"DEVELOPMENT / SKETCHBOOK", title: "Website Campus Expo", description: "Proyek website Campus Expo sedang dikembangkan. Fitur, teknologi, dan tautan publik belum dicantumkan karena belum dikonfirmasi.", status: "Dalam pengembangan" },
   { id: "coding", illustration:"/assets/illustrations/coding-sketch-v1.webp",illustrationThumbnail:"/assets/illustrations/coding-sketch-thumb-v1.webp",category:"DEVELOPMENT / SKETCHBOOK", title: "Eksplorasi coding", description: "Contoh kode dan repositori nyata akan ditambahkan di sini. Belum ada proyek contoh yang dipublikasikan.", status: "Detail menyusul" },

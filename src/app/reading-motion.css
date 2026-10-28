@@ -1,0 +1,27 @@
+/* Motion stays scoped to Read Mode; content is visible without enhancement. */
+html:has(.reading-mode[data-active="true"]){scroll-behavior:smooth;scroll-padding-top:90px}
+.reading-mode .reading-intro{position:relative;isolation:isolate}
+.reading-mode .reading-intro:before{content:"";position:absolute;right:4%;top:4px;width:105px;height:105px;border:1px solid #b7b99944;border-radius:50%;opacity:.35;pointer-events:none;z-index:-1;transform:translateY(var(--read-parallax,0px)) rotate(-20deg);box-shadow:inset 0 0 0 12px #b7b99906}
+.reading-mode .read-reveal{animation:read-rise .65s cubic-bezier(.2,.7,.25,1) both;animation-delay:var(--read-delay,0ms)}
+.reading-mode[data-active="true"] .reading-intro>h1{animation:read-hero .8s cubic-bezier(.2,.7,.25,1) backwards}
+.reading-mode[data-active="true"] .reading-intro>.eyebrow{animation:read-rise .6s ease-out backwards}
+.reading-mode[data-active="true"] .reading-intro .reading-nav>a{animation:read-rise .65s ease-out backwards;animation-delay:.12s}.reading-mode[data-active="true"] .reading-intro .reading-nav>a:nth-child(2n){animation-delay:.2s}.reading-mode[data-active="true"] .reading-intro .reading-nav>a:nth-child(3n){animation-delay:.28s}
+.reading-mode :is(button,a){transition:transform .2s ease,color .2s ease,background-color .2s ease,border-color .2s ease,box-shadow .2s ease}
+.reading-mode :is(button,a):active{transform:translateY(1px) scale(.985)}
+.reading-mode :is(.project-card,.achievement-card,.contact-channel,.photo-card){transition:transform .28s cubic-bezier(.2,.7,.25,1),border-color .28s ease,box-shadow .28s ease}
+.reading-mode :is(.project-preview img,.photo-card img,.portrait-slot img){transition:transform .55s cubic-bezier(.2,.7,.25,1)}
+.reading-mode .project-preview{overflow:hidden}.reading-mode .portrait-slot{overflow:hidden}
+.reading-mode .reading-nav>a{position:relative}.reading-mode .reading-nav>a:after,.reading-mode .text-link:after{content:"";position:absolute;left:12px;right:12px;bottom:5px;height:1px;background:currentColor;transform:scaleX(0);transform-origin:left;transition:transform .25s ease}
+.reading-mode .text-link{position:relative}.reading-mode .text-link:after{left:0;right:0;bottom:-3px}.reading-mode .reading-nav>a[aria-current="location"]{color:var(--amber);border-color:var(--amber)}.reading-mode .reading-nav>a[aria-current="location"]:after{transform:scaleX(1)}
+.reading-mode :is(.photo-viewer,.grading-inline[open]>.grading-desk,.secret-message){animation:read-rise .35s ease-out both}
+@media(hover:hover) and (pointer:fine){.reading-mode :is(.project-card,.achievement-card,.contact-channel,.photo-card):hover{transform:translateY(-4px);border-color:#c0b98a99;box-shadow:0 12px 28px #08130d25}.reading-mode :is(.project-card:hover .project-preview img,.photo-card:hover img){transform:scale(1.025)}.reading-mode .portrait-slot:hover img{transform:scale(1.015)}.reading-mode .reading-nav>a:hover{transform:translateY(-2px)}.reading-mode :is(.reading-nav>a,.text-link):hover:after{transform:scaleX(1)}}
+@keyframes read-rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes read-hero{from{opacity:0;transform:translateY(18px);filter:blur(3px)}to{opacity:1;transform:translateY(0);filter:blur(0)}}
+@media(max-width:700px){.reading-mode .reading-intro:before{display:none}.reading-mode .read-reveal{animation-duration:.5s}}
+@media(prefers-reduced-motion:reduce){html:has(.reading-mode[data-active="true"]){scroll-behavior:auto}.reading-mode *, .reading-mode *:before,.reading-mode *:after{animation:none!important;transition:none!important}.reading-mode .reading-intro:before{transform:none}.reading-mode .read-reveal{opacity:1;transform:none}}
+
+.reading-mode .photo-viewer.read-photo-closing{animation:read-photo-out .18s ease-in both;pointer-events:none}
+@keyframes read-photo-out{to{opacity:0;transform:translateY(8px)}}
+@media(prefers-reduced-motion:reduce){.reading-mode .photo-viewer.read-photo-closing{animation:none!important}}
+
+html:has(.reading-mode[data-active="true"]) .site-header{background:#171b20f5;border-bottom:1px solid #b7b99922}

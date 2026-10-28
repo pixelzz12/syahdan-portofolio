@@ -7,6 +7,7 @@ import "./ev-guide.css";
 import "./profile-terminal.css";
 import "./facility-expansion.css";
 import "./free-explore.css";
+import "./reading-motion.css";
 
 export const metadata: Metadata = {
   title: "SYAHDAN — Creative Website Developer",

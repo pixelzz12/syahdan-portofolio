@@ -14,6 +14,7 @@ import CVDialog from "./ui/CVPanel";
 import {useAmbientAudio} from "./useAmbientAudio";
 import BootScreen from "./ui/BootScreen";
 import EVGuide from "./ui/EVGuide";
+import {useReadingMotion} from "./useReadingMotion";
 import FacilityMap from "./ui/FacilityMap";
 import FreeExploreControls from "./ui/FreeExploreControls";
 import {useFreeExplore} from "./useFreeExplore";
@@ -30,6 +31,7 @@ class SceneBoundary extends Component<{ children: ReactNode; onFailure: () => vo
 
 export default function Facility() {
   const [mode, setMode] = useState<"facility" | "reading">("facility");
+  useReadingMotion(mode==="reading");
   const [webgl, setWebgl] = useState<boolean | null>(null);
   const [ready, setReady] = useState(false);
   const[bootStep,setBootStep]=useState(0),[bootComplete,setBootComplete]=useState(false);

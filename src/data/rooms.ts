@@ -11,6 +11,7 @@ export const roomActions: Record<RoomId, RoomAction[]> = {
     { id: "project-campus", label: "Campus Expo", kind: "project", projectId: "campus-expo" },
     { id: "project-coding", label: "Coding", kind: "project", projectId: "coding" },
     { id: "project-design", label: "UI/UX", kind: "project", projectId: "ui-ux" },
+    {id:"project-pranumerando",label:"Kalkulator Pranumerando",kind:"project",projectId:"pranumerando"},
     { id: "secret-terminal",label:"Terminal diagnostik",kind:"secret",secretId:"terminal" },
   ],
   operator: [
