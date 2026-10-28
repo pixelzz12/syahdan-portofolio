@@ -153,14 +153,14 @@ function Architecture() {
   </>;
 }
 
-function ServiceProps() {
+function ServiceProps({message}:{message:string}) {
   return <>
     <group position={[4.15, 0, 5.8]} rotation={[0, -Math.PI / 2, 0]}>
       <Box position={[0, 1.5, 0]} scale={[1.3, 3, 0.55]} color="#6e8071" />
       <Box position={[0, 1.65, 0.3]} scale={[1.08, 2.45, 0.1]} color="#8f9480" />
       {[0, 1, 2, 3].map(i => <Box key={i} position={[0, 2.5 - i * 0.12, 0.37]} scale={[0.76, 0.035, 0.04]} color="#465a50" />)}
       <Box position={[0.32, 1.55, 0.4]} scale={[0.05, 0.35, 0.07]} color="#c3b99a" />
-      <group position={[-0.1, 0.8, 0.365]}><Sign title="SERVICE" subtitle="MAINTENANCE / 01" width={0.7} height={0.25} /></group>
+      <group position={[0, 1.15, 0.365]} name="corridor-terminal-message"><Sign title={message} subtitle="NOVA NODE / SERVICE" width={1.05} height={0.32} /></group>
       <mesh position={[0.29, 1.25, 0.37]}><boxGeometry args={[0.07, 0.07, 0.04]} /><meshBasicMaterial color="#d0ac68" /></mesh>
     </group>
     {[0, 1].map(i => <group key={i} position={[3.7, 0, 8 + i * 1.1]}>
@@ -180,12 +180,15 @@ function ServiceProps() {
   </>;
 }
 
-function CorridorCopy({copy,props}:{copy:number;props:Props}) {
+function CorridorCopy({copy,props,message}:{copy:number;props:Props;message:string}) {
   const group=useRef<THREE.Group>(null);
   useFrame(({camera})=>{if(group.current)group.current.visible=copy===0||(copy===1?camera.position.z<-42:camera.position.z>0)||(props.destination!==null&&props.selectedTile===copy)||(props.departingRoom!==null&&props.departingTile===copy);});
-  return <group ref={group} position={[0,0,-copy*88]}><Architecture /><WallDetails /><SpatialTitle reducedMotion={props.reducedMotion} exploring={props.phase==="corridor"} /><LoopGate copy={copy} reducedMotion={props.reducedMotion} />{placements.map(item=><Door key={item.id} item={item} copy={copy} sceneProps={props} onDoor={props.onDoor} onObject={props.onObject} active={(props.destination===item.id&&props.selectedTile===copy)||(props.departingRoom===item.id&&props.departingTile===copy)} reducedMotion={props.reducedMotion} />)}<ServiceProps /><UniversityPlaque /><OperatorAvatar onLoaded={copy===0?(props.onAvatarReady||props.onReady):undefined} reducedMotion={props.reducedMotion} exploring={props.phase==="corridor"} onSelect={()=>{if(props.phase==="corridor")props.onDoor("operator",copy);}} /><MaintenanceRobot reducedMotion={props.reducedMotion} position={[-2.5,0,2.8]} /></group>;
+  return <group ref={group} position={[0,0,-copy*88]}><Architecture /><WallDetails /><SpatialTitle reducedMotion={props.reducedMotion} exploring={props.phase==="corridor"} /><LoopGate copy={copy} reducedMotion={props.reducedMotion} />{placements.map(item=><Door key={item.id} item={item} copy={copy} sceneProps={props} onDoor={props.onDoor} onObject={props.onObject} active={(props.destination===item.id&&props.selectedTile===copy)||(props.departingRoom===item.id&&props.departingTile===copy)} reducedMotion={props.reducedMotion} />)}<ServiceProps message={message}/><UniversityPlaque /><OperatorAvatar onLoaded={copy===0?(props.onAvatarReady||props.onReady):undefined} reducedMotion={props.reducedMotion} exploring={props.phase==="corridor"} onSelect={()=>{if(props.phase==="corridor")props.onDoor("operator",copy);}} /><MaintenanceRobot reducedMotion={props.reducedMotion} position={[-2.5,0,2.8]} /></group>;
 }
+const terminalMessages=["SYSTEM ONLINE","WELCOME BACK","EXPLORE THE SECTORS","EV WAS HERE","KEEP CURIOUS","// SIGNAL FOUND"];
 function World(props: Props) {
+  const [messageIndex,setMessageIndex]=useState(0);
+  useEffect(()=>{const timer=window.setInterval(()=>setMessageIndex(previous=>(previous+1+Math.floor(Math.random()*(terminalMessages.length-1)))%terminalMessages.length),6500);return()=>window.clearInterval(timer);},[]);
   const { gl } = useThree();
   const assetsReady=useRef(false),renderedFrames=useRef(0),announced=useRef(false);
   const markAssets=useCallback(()=>{assetsReady.current=true;props.onBootStep(3);},[props.onBootStep]);
@@ -209,7 +212,7 @@ function World(props: Props) {
     <hemisphereLight args={["#c9d8d1", "#5c5c50", 1.4]} />
     <PeriodicLights />
     <CameraRig {...props} />
-    {[-1,0,1].map(copy=><CorridorCopy key={copy} copy={copy} props={{...props,onAvatarReady:markAssets}} />)}
+    {[-1,0,1].map(copy=><CorridorCopy key={copy} copy={copy} message={terminalMessages[messageIndex]} props={{...props,onAvatarReady:markAssets}} />)}
   </PaintedSurfaces>;
 }
 
