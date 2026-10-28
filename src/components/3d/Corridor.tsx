@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { type SectorId } from "@/data/portfolio";
 import { bays, doors as placements, type FacilityPhase } from "@/lib/facility-layout";
+import {sectorCue} from "@/lib/sector-cue";
 import CameraRig from "./CameraRig";
 import { Box, Sign, PaintedSurfaces } from "./Primitives";
 import { hasInterior, type RoomAction, type RoomId, type RoomView } from "@/data/rooms";
@@ -32,10 +33,15 @@ function Door({ item, onDoor, onObject, active, reducedMotion, copy, sceneProps 
   useFrame(({camera}, delta) => {
     if (doorway.current && frontage.current) {
       doorway.current.worldToLocal(localCamera.current.copy(camera.position));
-      const approaching = sceneProps.phase === "corridor" && Math.abs(localCamera.current.x) < (near.current ? 9 : 8.4) && localCamera.current.z > 0 && localCamera.current.z < 9;
-      if (approaching !== near.current) { near.current = approaching; setNearby(approaching); }
-      const amount = approaching || (hovered && sceneProps.phase === "corridor") ? 0.58 : 0;
-      frontage.current.position.z = reducedMotion ? amount : THREE.MathUtils.damp(frontage.current.position.z, amount, 7, delta);
+      const cue=sceneProps.phase==="corridor"?sectorCue(camera.position.z-(item.z-copy*88)):0;
+      const approaching=cue>.15;
+      if(approaching!==near.current){near.current=approaching;setNearby(approaching);}
+      const amount=reducedMotion?0:Math.max(cue,hovered&&sceneProps.phase==="corridor"?.55:0);
+      const dt=Math.min(delta,.1),turn=Math.max(-.22,Math.min(.22,Math.atan2(localCamera.current.x,Math.max(1,localCamera.current.z))));
+      frontage.current.position.z=THREE.MathUtils.damp(frontage.current.position.z,amount*.76,6,dt);
+      frontage.current.position.x=THREE.MathUtils.damp(frontage.current.position.x,THREE.MathUtils.clamp(localCamera.current.x/6,-1,1)*amount*.18,6,dt);
+      frontage.current.rotation.y=THREE.MathUtils.damp(frontage.current.rotation.y,turn*amount,6,dt);
+      if(reducedMotion){frontage.current.position.set(0,0,0);frontage.current.rotation.y=0;}
     }
     const opening = active ? 1.72 : 0.67;
     if (left.current && right.current) {
