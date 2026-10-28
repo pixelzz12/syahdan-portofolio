@@ -21,27 +21,28 @@ function Shell({ room }: { room: RoomId }) {
   const film = room === "film";
   const compact = room === "workshop" || room === "research" || room === "transmission";
   const core=room==="development";
-  const halfWidth = core?6:compact ? 3.6 : 4.3;
-  const center = core?-10.5:compact ? -6.5 : -7.5;
-  const depth = core?16:compact ? 8 : 10;
-  const back = core?-18.55:compact ? -10.55 : -12.55;
-  const height=core?6.8:5.2;
+  const halfWidth = film?5.4:core?6:compact ? 3.6 : 4.3;
+  const center = film?-9.5:core?-10.5:compact ? -6.5 : -7.5;
+  const depth = film?14:core?16:compact ? 8 : 10;
+  const back = film?-16.55:core?-18.55:compact ? -10.55 : -12.55;
+  const height=film?5.8:core?6.8:5.2;
   const sector = sectors.find(item => item.id === room)!;
   return <>
     <Box position={[0, -0.1, center]} scale={[halfWidth * 2, 0.2, depth]} color={film ? "#555f57" : "#848775"} surface="concrete" />
     <Box position={[0, height/2, back]} scale={[halfWidth * 2 + 0.1, height, 0.2]} color={film ? "#485858" : room === "research" ? "#718b83" : room === "transmission" ? "#7b8e8b" : "#8b9789"} />
     {[-1, 1].map(side => <group key={side}>
       <Box position={[side * halfWidth, height/2, center]} scale={[0.2, height, depth]} color={film ? "#465450" : "#798d80"} />
-      <Box position={[side * (compact ? 2.85 : 3.17), 2.6, -2.55]} scale={[compact ? 1.4 : 2.1, 5.2, 0.2]} color="#6c8073" />
+      <Box position={[side * (film?3.75:compact ? 2.85 : 3.17), height/2, -2.55]} scale={[film?3.3:compact ? 1.4 : 2.1, height, 0.2]} color="#6c8073" />
       <Box position={[side * (halfWidth - 0.13), 0.6, center]} scale={[0.08, 1.15, depth - 0.2]} color="#394f4a" />
       <Box position={[side * (halfWidth - 0.25), 4.4, center]} scale={[0.15, 0.12, depth - 0.2]} color="#a49876" surface="metal" />
-      {(compact ? [-4.8, -8.8] : [-5.2, -9.5]).map(z => <Box key={z} position={[side * (halfWidth - 0.18), 2.6, z]} scale={[0.15, 5.1, 0.2]} color="#4a6259" />)}
+      {(film?[-5.2,-10,-14.8]:compact ? [-4.8, -8.8] : [-5.2, -9.5]).map(z => <Box key={z} position={[side * (halfWidth - 0.18), height/2, z]} scale={[0.15, height-.1, 0.2]} color="#4a6259" />)}
     </group>)}
-    <Box position={[0, core?6.8:5.15, center]} scale={[halfWidth * 2, 0.2, depth]} color="#3d504a" />
-    {(compact ? [-4.8, -8.8] : [-5.1, -9.5]).map(z => <Box key={z} position={[0, 4.95, z]} scale={[halfWidth * 2 - 0.1, 0.22, 0.2]} color="#718475" />)}
-    <Box position={[0, 4.78, -8]} scale={[2.1, 0.15, 0.4]} color="#344d47" />
-    <mesh position={[0, 4.68, -8]}><boxGeometry args={[1.8, 0.045, 0.24]} /><meshBasicMaterial color={film ? "#c48c6c" : "#d6c598"} /></mesh>
-    <pointLight position={[0, 4.35, -8]} intensity={film ? 22 : 32} distance={13} color={film ? "#c99678" : "#e0cc9f"} />
+    <Box position={[0, film?5.8:core?6.8:5.15, center]} scale={[halfWidth * 2, 0.2, depth]} color="#3d504a" />
+    {(film?[-5.1,-10,-14.8]:compact ? [-4.8, -8.8] : [-5.1, -9.5]).map(z => <Box key={z} position={[0, height-.25, z]} scale={[halfWidth * 2 - 0.1, 0.22, 0.2]} color="#718475" />)}
+    {film&&<><Box position={[0,5.4,-13.4]} scale={[2.8,.15,.4]} color="#344d47"/><mesh position={[0,5.3,-13.4]}><boxGeometry args={[2.5,.045,.24]}/><meshBasicMaterial color="#c48c6c"/></mesh><pointLight position={[0,4.9,-13.4]} intensity={27} distance={11} color="#c99678"/></>}
+    <Box position={[0, film?5.4:4.78, -8]} scale={[2.1, 0.15, 0.4]} color="#344d47" />
+    <mesh position={[0, film?5.3:4.68, -8]}><boxGeometry args={[1.8, 0.045, 0.24]} /><meshBasicMaterial color={film ? "#c48c6c" : "#d6c598"} /></mesh>
+    <pointLight position={[0, film?4.9:4.35, -8]} intensity={film ? 22 : 32} distance={13} color={film ? "#c99678" : "#e0cc9f"} />
     <group position={[0, 3.85, back + 0.13]}><Sign title={`${sector.number} / ${sector.name}`} subtitle={film ? "AUTHENTIC PHOTOS / ARCHIVE IN PREPARATION" : room === "research" ? "PROTOTYPES / DALAM PENGEMBANGAN" : room === "transmission" ? "CONTACT CHANNELS / STANDBY" : "WORK / LEARN / MAKE"} width={4} height={0.7} /></group>
   </>;
 }
@@ -87,32 +88,32 @@ function Operator({ onObject }: { onObject: (action: RoomAction) => void }) {
 }
 
 function Film({ onObject }: { onObject: (action: RoomAction) => void }) {
-  const rows = Math.max(1, Math.ceil(photoSlots.length / 6));
-  const rowZ = (row: number) => -6.9 - row * 3.6 / Math.max(1, rows - 1);
+  const rows = Math.max(1, Math.ceil(photoSlots.length / 5));
+  const rowZ = (row: number) => -7.2 - row * 6.2 / Math.max(1, rows - 1);
   return <>
-    <Desk position={[0, 0, -10.5]} width={3.1}><Monitor title="PHOTO INSPECTION" subtitle="ARCHIVE / BEFORE & AFTER" action={roomActions.film[1]} onObject={onObject} width={2} /></Desk>
-    <group position={[-3.15, 0, -9.4]}>
+    <Desk position={[0, 0, -14.8]} width={3.1}><Monitor title="PHOTO INSPECTION" subtitle="ARCHIVE / BEFORE & AFTER" action={roomActions.film[1]} onObject={onObject} width={2} /></Desk>
+    <group position={[-4.15, 0, -13.3]}>
       <Box position={[0, 1.6, 0]} scale={[1.35, 3.2, 1.3]} color="#50665f" />
       {[0, 1, 2, 3].map(i => <group key={i}><Box position={[0, 0.5 + i * 0.72, 0.68]} scale={[1.15, 0.58, 0.06]} color="#8c8a72" /><Box position={[0, 0.5 + i * 0.72, 0.73]} scale={[0.4, 0.065, 0.06]} color="#c0b69a" /></group>)}
       <group position={[0, 3.55, 0.1]}><Sign title="PHOTO ARCHIVE" subtitle={`${photoSlots.filter(slot => slot.photo).length} / ${photoSlots.length} SLOTS FILLED`} width={1.45} height={0.5} /></group>
       <Hotspot action={roomActions.film[0]} position={[0, 1.6, 0.8]} size={[1.55, 3.3, 0.25]} onObject={onObject} />
     </group>
     {Array.from({ length: rows }, (_, row) => <group key={row}>
-      <Box position={[0, 4.05, rowZ(row)]} scale={[7.1, 0.025, 0.025]} color="#a3a18a" surface="metal" />
-      {[0, 1].map(side => <Box key={side} position={[side ? 3.5 : -3.5, 4.6, rowZ(row)]} scale={[0.025, 1.1, 0.025]} color="#88968a" />)}
+      <Box position={[0, 4.3, rowZ(row)]} scale={[9.2, 0.025, 0.025]} color="#a3a18a" surface="metal" />
+      {[0, 1].map(side => <Box key={side} position={[side ? 4.6 : -4.6, 5.0, rowZ(row)]} scale={[0.025, 1.4, 0.025]} color="#88968a" />)}
     </group>)}
     {photoSlots.map((slot, i) => {
-      const row = Math.floor(i / 6), column = i % 6, count = Math.min(6, photoSlots.length - row * 6);
+      const row = Math.floor(i / 5), column = i % 5, count = Math.min(5, photoSlots.length - row * 5);
       const action: RoomAction = { id: `print-${slot.id}`, label: slot.photo?.title || `Slot foto ${slot.id}`, kind: "photo", slotId: slot.id };
-      return <group key={slot.id} position={[(column - (count - 1) / 2) * 1.06, 3.48, rowZ(row)]} rotation={[0, (i % 3 - 1) * 0.07, (i % 2 ? 1 : -1) * 0.035]}>
+      return <group key={slot.id} position={[(column - (count - 1) / 2) * 1.6, 3.73, rowZ(row)]} rotation={[0, (i % 3 - 1) * 0.07, (i % 2 ? 1 : -1) * 0.035]}>
         <Box position={[0, 0, 0]} scale={[0.85, 0.9, 0.025]} color="#c6c0aa" />
         <Box position={[0, 0.49, 0]} scale={[0.08, 0.19, 0.08]} color="#85927d" />
         <group position={[0, 0.015, 0.02]}>{slot.photo ? <ImagePlane src={assetTexture(slot.photo.src,slot.photo.thumbnailSrc)} width={0.73} height={0.69} /> : <Sign title={`SLOT ${slot.id}`} subtitle="MENUNGGU FOTO ASLI" width={0.73} height={0.67} color="#c4b898" />}</group>
         <Hotspot action={action} position={[0, 0, 0.055]} size={[0.91, 0.94, 0.1]} onObject={onObject} />
       </group>;
     })}
-    <Box position={[3.3, 0.65, -10.4]} scale={[1.3, 1.3, 1.3]} color="#695b50" />
-    <group position={[3.3, 1.9, -10.4]}><Sign title="RAW / PRINTS" subtitle="AUTHENTIC ASSETS ONLY" width={1.4} height={0.55} color="#bf9c80" /></group>
+    <Box position={[4.15, 0.65, -14.8]} scale={[1.3, 1.3, 1.3]} color="#695b50" />
+    <group position={[4.15, 1.9, -14.8]}><Sign title="RAW / PRINTS" subtitle="AUTHENTIC ASSETS ONLY" width={1.4} height={0.55} color="#bf9c80" /></group>
   </>;
 }
 

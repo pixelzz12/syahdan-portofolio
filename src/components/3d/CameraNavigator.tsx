@@ -2,24 +2,43 @@
 import { useFrame } from "@react-three/fiber";
 import { useMemo, useRef } from "react";
 import * as THREE from "three";
+import {safeRoomStep,type FreeExploreState,type Obstacle} from "@/lib/free-explore";
 import type { SectorId } from "@/data/portfolio";
 import { doors, pathPoints, type FacilityPhase } from "@/lib/facility-layout";
 import { roomPose } from "@/lib/room-paths";
 import { CORRIDOR_LENGTH, dampMotion, fraction, type PoseSnapshot, type RoomExperience, type SceneNavigation } from "@/lib/scene-navigation";
 import type { RoomView } from "@/data/rooms";
 
-type Props = { progress: React.RefObject<number>; navigation: React.RefObject<SceneNavigation>; roomProgress: React.RefObject<number>; experience: RoomExperience; selectedTile: number; destination: SectorId|null; phase: FacilityPhase; reducedMotion: boolean; roomView: RoomView; inspectionOpen: boolean; onArrive:(id:SectorId)=>void; onReturn:(progress:number)=>void };
+type Props = { freeInput:React.RefObject<FreeExploreState>; progress: React.RefObject<number>; navigation: React.RefObject<SceneNavigation>; roomProgress: React.RefObject<number>; experience: RoomExperience; selectedTile: number; destination: SectorId|null; phase: FacilityPhase; reducedMotion: boolean; roomView: RoomView; inspectionOpen: boolean; onArrive:(id:SectorId)=>void; onReturn:(progress:number)=>void };
 type Journey = { curve:THREE.CatmullRomCurve3; elapsed:number; duration:number; finalLook:THREE.Vector3; returning:boolean };
 export default function CameraNavigator(props:Props) {
   const path=useMemo(()=>new THREE.CatmullRomCurve3(pathPoints.map(p=>new THREE.Vector3(...p)),false,"centripetal"),[]);
   const tools=useMemo(()=>({p:new THREE.Vector3(),look:new THREE.Vector3(),ahead:new THREE.Vector3(),matrix:new THREE.Matrix4(),q:new THREE.Quaternion(),up:new THREE.Vector3(0,1,0)}),[]);
   const route=useRef<Journey|null>(null), previousKey=useRef(""), previousDoor=useRef<(typeof doors[number]&{tile:number})|null>(null);
   const speed=useRef(0), roomSpeed=useRef(0), corridorHold=useRef<PoseSnapshot|null>(null), roomHold=useRef<{position:THREE.Vector3;quaternion:THREE.Quaternion;progress:number;key:string}|null>(null), wasInspecting=useRef(false);
+  const freeWasActive=useRef(false),returningFree=useRef(false),obstacles=useRef<Obstacle[]>([]);
+  const freeTools=useMemo(()=>({euler:new THREE.Euler(0,0,0,"YXZ"),inverse:new THREE.Matrix4(),box:new THREE.Box3()}),[]);
   function sample(u:number,base:number,out=new THREE.Vector3()) { path.getPointAt(fraction(u),out);out.z-=CORRIDOR_LENGTH*(Math.floor(u)-base);return out; }
   function atZ(z:number) { let a=0,b=1;for(let i=0;i<18;i++){const t=(a+b)/2;if(path.getPointAt(t).z>z)a=t;else b=t;}return(a+b)/2; }
   useFrame(({camera,gl,scene,size,clock},rawDelta)=>{
     const dt=Math.min(rawDelta,0.1), nav=props.navigation.current, {p,look,ahead,matrix,q,up}=tools;
     const door=doors.find(item=>item.id===props.destination), key=`${props.phase}:${props.destination}:${props.selectedTile}`;
+    const free=props.freeInput.current;
+    if(free.active!==freeWasActive.current){
+      roomHold.current=null;roomSpeed.current=0;returningFree.current=!free.active;
+      if(free.active&&door){
+        const interior=scene.getObjectByName(`interior-${door.id}`);obstacles.current=[];
+        if(interior){interior.updateWorldMatrix(true,true);freeTools.inverse.copy(interior.matrixWorld).invert();interior.traverse(object=>{
+          if(!(object instanceof THREE.Mesh)||!object.geometry||object.geometry.type==="PlaneGeometry")return;
+          const material=Array.isArray(object.material)?object.material[0]:object.material;if(material.transparent&&material.opacity<.1)return;
+          object.geometry.computeBoundingBox();if(!object.geometry.boundingBox)return;
+          const b=freeTools.box.copy(object.geometry.boundingBox).applyMatrix4(object.matrixWorld).applyMatrix4(freeTools.inverse);
+          if(b.max.y<.35||b.min.y>camera.position.y+.2)return;
+          obstacles.current.push({minX:b.min.x,maxX:b.max.x,minZ:b.min.z,maxZ:b.max.z});
+        });}
+      }
+      freeWasActive.current=free.active;
+    }
     const viewKey=`${props.destination}:${props.roomView}:${props.experience}`;
     if(props.inspectionOpen&&!wasInspecting.current&&props.phase==="room") {
       props.roomProgress.current=nav.roomCursor;
@@ -71,6 +90,16 @@ export default function CameraNavigator(props:Props) {
           corridorHold.current=snap;nav.snapshot=null;speed.current=0;props.progress.current=snap.progress;props.onReturn(snap.progress);
         } else if(door){camera.lookAt(journey.finalLook);nav.roomCursor=0;props.onArrive(door.id);}
       }
+    } else if(props.phase==="room"&&door&&free.active) {
+      if(!free.paused){
+        const e=freeTools.euler.setFromQuaternion(camera.quaternion,"YXZ");e.y-=free.lookX;e.x=THREE.MathUtils.clamp(e.x-free.lookY,-1.15,1.15);e.z=0;free.lookX=free.lookY=0;camera.quaternion.setFromEuler(e);
+        const magnitude=Math.max(1,Math.hypot(free.forward,free.strafe)),speed=2.1*dt/magnitude;
+        const dx=(-Math.sin(e.y)*free.forward+Math.cos(e.y)*free.strafe)*speed,dz=(-Math.cos(e.y)*free.forward-Math.sin(e.y)*free.strafe)*speed;
+        const originZ=door.z-props.selectedTile*CORRIDOR_LENGTH;
+        const x=(camera.position.z-originZ)/door.side,z=(camera.position.x-door.x)/(-door.side);
+        const next=safeRoomStep(x,z,dz/door.side,dx/(-door.side),door.id,obstacles.current);
+        camera.position.set(door.x-door.side*next.z,THREE.MathUtils.clamp(camera.position.y,1.8,3.3),originZ+door.side*next.x);
+      }
     } else if(props.phase==="room"&&door&&!props.inspectionOpen) {
       const hold=roomHold.current;
       if(hold&&hold.key===viewKey&&Math.abs(props.roomProgress.current-hold.progress)<0.000001){camera.position.copy(hold.position);camera.quaternion.copy(hold.quaternion);}
@@ -79,7 +108,7 @@ export default function CameraNavigator(props:Props) {
         const next=dampMotion(nav.roomCursor,props.roomProgress.current,roomSpeed.current,dt,Infinity,0.22);nav.roomCursor=props.reducedMotion?props.roomProgress.current:next.value;roomSpeed.current=next.velocity;
         const preset=roomPose(door.id,props.roomView,props.experience,nav.roomCursor),z=door.z-props.selectedTile*CORRIDOR_LENGTH;
         p.set(door.x-door.side*preset.position[2],preset.position[1],z+door.side*preset.position[0]);look.set(door.x-door.side*preset.look[2],preset.look[1],z+door.side*preset.look[0]);
-        camera.position.lerp(p,props.reducedMotion?1:1-Math.exp(-dt*5));matrix.lookAt(camera.position,look,up);q.setFromRotationMatrix(matrix);camera.quaternion.slerp(q,props.reducedMotion?1:1-Math.exp(-dt*6));
+        camera.position.lerp(p,props.reducedMotion&&!returningFree.current?1:1-Math.exp(-dt*5));matrix.lookAt(camera.position,look,up);q.setFromRotationMatrix(matrix);camera.quaternion.slerp(q,props.reducedMotion&&!returningFree.current?1:1-Math.exp(-dt*6));if(camera.position.distanceToSquared(p)<.000001&&camera.quaternion.angleTo(q)<.002)returningFree.current=false;
       }
     } else if(props.phase==="corridor") {
       const hold=corridorHold.current;
@@ -89,14 +118,14 @@ export default function CameraNavigator(props:Props) {
         // Follow the latest scroll position without accumulating a speed-limited
         // backlog after a large wheel burst or scrollbar drag.
         const next=dampMotion(nav.cursor,props.progress.current,speed.current,dt,Infinity,0.16);nav.cursor=props.reducedMotion?props.progress.current:next.value;speed.current=next.velocity;nav.cycle=Math.floor(nav.cursor);
-        sample(nav.cursor,nav.cycle,p);sample(nav.cursor+0.12,nav.cycle,look);look.y=p.y-0.15;camera.position.copy(p);matrix.lookAt(p,look,up);q.setFromRotationMatrix(matrix);camera.quaternion.slerp(q,props.reducedMotion?1:1-Math.exp(-dt*6));
+        sample(nav.cursor,nav.cycle,p);sample(nav.cursor+0.12,nav.cycle,look);look.y=p.y-0.15;camera.position.copy(p);matrix.lookAt(p,look,up);q.setFromRotationMatrix(matrix);camera.quaternion.slerp(q,props.reducedMotion&&!returningFree.current?1:1-Math.exp(-dt*6));
       }
     }
     if(gl.domElement.dataset.sceneQa==="true"&&clock.elapsedTime-Number(gl.domElement.dataset.sampleTime||-1)>0.1) {
       camera.updateMatrixWorld();gl.domElement.dataset.sampleTime=String(clock.elapsedTime);
       const objects:{id:string;x:number;y:number;visible:boolean}[]=[];let aiProjectionCount=0,evHeight:number|null=null;const installations:{name:string;position:number[];quaternion:number[];opacity?:number}[]=[],gates:{name:string;open:boolean}[]=[];
       const evIdle:unknown[]=[];scene.traverse(object=>{if(object.name==="ev-corridor-idle"||object.name==="ev-research-idle")evIdle.push({name:object.name,position:object.getWorldPosition(new THREE.Vector3()).toArray(),...object.userData.idle});if(object.name.startsWith("loop-gate-"))gates.push({name:object.name,open:object.userData.open===true});if(object.name.startsWith("project-sheet-")||object.name==="paper-airplane"||object.name==="spatial-syahdan-title"||object.name==="operator-avatar"||object.name.startsWith("arrival-letter-"))installations.push({name:object.name,position:object.getWorldPosition(new THREE.Vector3()).toArray(),quaternion:object.getWorldQuaternion(new THREE.Quaternion()).toArray(),opacity:object instanceof THREE.Mesh&&object.material instanceof THREE.MeshBasicMaterial?object.material.opacity:undefined});if(object.name==="research-ai-projection")aiProjectionCount++;if(object.name==="ev-research-idle")evHeight=object.position.y;if(!object.name.startsWith("room-object-"))return;let shown=true;for(let ancestor:THREE.Object3D|null=object;ancestor;ancestor=ancestor.parent){if(!ancestor.visible){shown=false;break;}}const point=object.getWorldPosition(new THREE.Vector3()).project(camera);objects.push({id:object.name.slice(12),x:(point.x+1)*size.width/2,y:(1-point.y)*size.height/2,visible:shown&&Math.abs(point.x)<1&&Math.abs(point.y)<1&&point.z>-1&&point.z<1});});
-      gl.domElement.dataset.scene=JSON.stringify({camera:camera.position.toArray(),quaternion:camera.quaternion.toArray(),phase:props.phase,target:props.progress.current,cursor:nav.cursor,cycle:nav.cycle,roomCursor:nav.roomCursor,snapshot:nav.snapshot,installations,gates,objects,evIdle,aiProjectionCount,evHeight,doors:doors.map(item=>{const mesh=scene.getObjectByName(`door-hit-${item.id}-0`);const point=mesh?mesh.getWorldPosition(new THREE.Vector3()).project(camera):new THREE.Vector3(2,2,2);return{id:item.id,number:item.number,x:(point.x+1)*size.width/2,y:(1-point.y)*size.height/2,depth:point.z,visible:Math.abs(point.x)<1&&Math.abs(point.y)<1&&point.z>-1&&point.z<1};})});
+      gl.domElement.dataset.scene=JSON.stringify({camera:camera.position.toArray(),quaternion:camera.quaternion.toArray(),phase:props.phase,freeExplore:free.active,freePaused:free.paused,freeObstacleCount:obstacles.current.length,freeLocal:door?[(camera.position.z-(door.z-props.selectedTile*CORRIDOR_LENGTH))/door.side,camera.position.y,(camera.position.x-door.x)/(-door.side)]:null,target:props.progress.current,cursor:nav.cursor,cycle:nav.cycle,roomCursor:nav.roomCursor,snapshot:nav.snapshot,installations,gates,objects,evIdle,aiProjectionCount,evHeight,doors:doors.map(item=>{const mesh=scene.getObjectByName(`door-hit-${item.id}-0`);const point=mesh?mesh.getWorldPosition(new THREE.Vector3()).project(camera):new THREE.Vector3(2,2,2);return{id:item.id,number:item.number,x:(point.x+1)*size.width/2,y:(1-point.y)*size.height/2,depth:point.z,visible:Math.abs(point.x)<1&&Math.abs(point.y)<1&&point.z>-1&&point.z<1};})});
     }
   },-2);
   return null;

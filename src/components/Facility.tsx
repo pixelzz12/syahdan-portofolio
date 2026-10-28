@@ -15,6 +15,9 @@ import {useAmbientAudio} from "./useAmbientAudio";
 import BootScreen from "./ui/BootScreen";
 import EVGuide from "./ui/EVGuide";
 import FacilityMap from "./ui/FacilityMap";
+import FreeExploreControls from "./ui/FreeExploreControls";
+import {useFreeExplore} from "./useFreeExplore";
+import type {FreeExploreState} from "@/lib/free-explore";
 
 const Corridor = dynamic(() => import("./3d/Corridor"), { ssr: false });
 
@@ -46,6 +49,13 @@ export default function Facility() {
   const[cvOpen,setCVOpen]=useState(false);
   const[guideOpen,setGuideOpen]=useState(false);
   const[mapOpen,setMapOpen]=useState(false),[visited,setVisited]=useState<SectorId[]>([]),[visitsLoaded,setVisitsLoaded]=useState(false);
+  const[freeExplore,setFreeExplore]=useState(false);
+  const freeInput=useRef<FreeExploreState>({active:false,paused:false,forward:0,strafe:0,lookX:0,lookY:0});
+  const exitFree=useCallback(()=>setFreeExplore(false),[]);
+  const freePaused=Boolean(inspecting||guideOpen||mapOpen||cvOpen||phase!=="room");
+  freeInput.current.active=freeExplore;freeInput.current.paused=freePaused;
+  useFreeExplore(freeInput,freeExplore,freePaused,exitFree);
+  useEffect(()=>{if(phase!=="room")setFreeExplore(false);},[phase]);
   const guideCount=useRef(0);
   const markVisited=useCallback((id:SectorId)=>setVisited(old=>old.includes(id)?old:[...old,id]),[]);
   useEffect(()=>{try{const ids=JSON.parse(sessionStorage.getItem("nova-visited")||"[]");if(Array.isArray(ids))setVisited(sectors.filter(s=>ids.includes(s.id)).map(s=>s.id));}catch{}setVisitsLoaded(true);},[]);
@@ -58,7 +68,7 @@ export default function Facility() {
   const busy = phase === "approaching" || phase === "returning";
   const onProgress=useCallback((value:number)=>{const t=fraction(value);setCurrent(Math.min(5,Math.floor(t*6)));setTravel(Math.round(t*100));},[]);
   const restoreCorridor=useCorridorScroll(track,progress,mode==="facility",Boolean(destination||inspecting||cvOpen||bootActive||guideOpen||mapOpen),onProgress);
-  useRoomScroll(roomProgress,phase==="room"&&!inspecting&&!cvOpen&&!guideOpen&&!mapOpen,experience);
+  useRoomScroll(roomProgress,phase==="room"&&!inspecting&&!cvOpen&&!guideOpen&&!mapOpen&&!freeExplore,experience);
   const onBootStep=useCallback((step:number)=>setBootStep(previous=>Math.max(previous,step)),[]);
   const markReady = useCallback(() => {setBootStep(4);setReady(true);}, []);
   const finishBoot=useCallback(()=>setBootComplete(true),[]);
@@ -77,7 +87,7 @@ export default function Facility() {
     audio.effect("object");
     if(action.kind==="ev"&&phase==="room"){openGuide();return;}
     setGuideOpen(false);
-    if (destination && hasInterior(destination) && phase === "room") { if(action.kind==="journey"){roomProgress.current=0;navigation.current.roomCursor=0;setExperience("about");document.querySelector("canvas")?.focus({preventScroll:true});return;}setRoomAction(action); setInspecting(destination); }
+    if (destination && hasInterior(destination) && phase === "room") { if(action.kind==="journey"){setFreeExplore(false);roomProgress.current=0;navigation.current.roomCursor=0;setExperience("about");document.querySelector("canvas")?.focus({preventScroll:true});return;}setRoomAction(action); setInspecting(destination); }
   }, [destination, phase,audio.effect,openGuide]);
   useEffect(()=>{if(inspecting||cvOpen||busy){setGuideOpen(false);setMapOpen(false);}},[inspecting,cvOpen,busy]);
 
@@ -105,7 +115,7 @@ export default function Facility() {
 
   function openSector(id: SectorId, tile?:number) {
     if (busy) return;
-    setMapOpen(false);setGuideOpen(false);
+    setFreeExplore(false);setMapOpen(false);setGuideOpen(false);
     audio.effect("door");
     if (phase === "room" && hasInterior(destination)) setDepartingRoom(destination);
     setSelectedTile(tile ?? (phase === "room" ? selectedTile : 0));
@@ -129,6 +139,7 @@ export default function Facility() {
     }else openSector(id);
   }
   function closeSector() {
+    setFreeExplore(false);
     setMapOpen(false);
     setGuideOpen(false);
     setInspecting(null); setRoomAction(null);
@@ -136,6 +147,7 @@ export default function Facility() {
     else { setDestination(null); setPhase("corridor"); }
   }
   function changeMode() {
+    setFreeExplore(false);
     setMapOpen(false);
     setGuideOpen(false);
     setBootComplete(false);setBootStep(webgl?1:0);
@@ -147,6 +159,7 @@ export default function Facility() {
     window.scrollTo({ top: 0, behavior: "instant" });
   }
   function showReadingMode() {
+    setFreeExplore(false);
     setMapOpen(false);
     setGuideOpen(false);
     navigation.current.snapshot=null;
@@ -169,7 +182,7 @@ export default function Facility() {
     <header className="site-header"><a href="#" className="brand" aria-label="SYAHDAN, kembali ke awal" onClick={event=>{event.preventDefault();navigation.current.snapshot=null;setInspecting(null);setDestination(null);setPhase("corridor");restoreCorridor(Math.floor(navigation.current.cursor));}}><span>SYAHDAN<small>NOVA NODE / PORTFOLIO</small></span></a><div className="header-right"><span className="system-label"><i className="signal-dot" /> CREATIVE WEBSITE DEVELOPER</span><button className="utility-button header-cv" disabled={busy} onClick={()=>setCVOpen(true)} aria-label="Preview dan Download CV"><span className="header-cv-long">Download </span>CV ↓</button><button className="utility-button audio-control" disabled={!audio.available} onClick={audio.toggle} aria-pressed={audio.enabled} aria-label={!audio.available?"Ambience belum tersedia":audio.enabled?"Matikan audio lingkungan":"Nyalakan audio lingkungan"} title={!audio.available?"Ambience belum tersedia":audio.enabled?"Matikan audio":"Nyalakan audio"}>{audio.enabled?"♫":"♪"}</button><button className="mode-button" onClick={changeMode} disabled={webgl === false && mode === "reading"}><span aria-hidden="true">{mode === "facility" ? "☷" : "◇"}</span> {mode === "facility" ? "Read Mode" : webgl === false ? "Read Mode aktif" : "Jelajahi 3D"}</button></div></header>
     {mode === "facility" && <main className="facility-track" ref={track}>
       <div className="facility-viewport" data-phase={phase} data-travelling={travel > 3}>
-        <div className="scene-container" style={{visibility:ready?"visible":"hidden"}}>{webgl && <SceneBoundary onFailure={fallback}><Corridor progress={progress} navigation={navigation} roomProgress={roomProgress} experience={experience} selectedTile={selectedTile} departingTile={departingTile} selectedAction={roomAction} destination={destination} departingRoom={departingRoom} phase={phase} roomView={roomView} inspectionOpen={Boolean(inspecting)} onObject={onObject} reducedMotion={reducedMotion} onDoor={openSector} onReady={markReady} onBootStep={onBootStep} onFailure={fallback} onArrive={onArrive} onReturn={onReturn} /></SceneBoundary>}</div>
+        <div className="scene-container" style={{visibility:ready?"visible":"hidden"}}>{webgl && <SceneBoundary onFailure={fallback}><Corridor freeInput={freeInput} progress={progress} navigation={navigation} roomProgress={roomProgress} experience={experience} selectedTile={selectedTile} departingTile={departingTile} selectedAction={roomAction} destination={destination} departingRoom={departingRoom} phase={phase} roomView={roomView} inspectionOpen={Boolean(inspecting)} onObject={onObject} reducedMotion={reducedMotion} onDoor={openSector} onReady={markReady} onBootStep={onBootStep} onFailure={fallback} onArrive={onArrive} onReturn={onReturn} /></SceneBoundary>}</div>
         <div className="scene-shade" />
         <h1 className="sr-only">SYAHDAN — portfolio Muhammad Syahdan Herdhiyanta</h1>
         <aside className="directory" aria-label="Direktori enam sektor" data-open={directoryOpen}><button className="directory-heading" aria-expanded={directoryOpen} aria-controls="facility-sectors" onClick={() => setDirectoryOpen(value => !value)}><span className="mono">FACILITY DIRECTORY</span><span className="mono">06 SECTORS {directoryOpen ? "−" : "+"}</span></button><nav id="facility-sectors" hidden={!directoryOpen}>{sectors.map((sector, index) => <button key={sector.id} disabled={busy} className={`directory-item ${current === index ? "active" : ""}`} onClick={() => openSector(sector.id)} aria-label={`Buka sektor ${sector.number}: ${sector.name}`}><span className="directory-number">{sector.number}</span><span><strong>{sector.name}</strong><small>{sector.label}</small></span><span className="directory-arrow" aria-hidden="true">↗</span></button>)}</nav><div className="directory-foot" hidden={!directoryOpen}><i className="signal-dot" /><span>Enam ruang. Pilih untuk masuk.</span><button className="text-link ev-greeting-button" onClick={()=>window.dispatchEvent(new Event("nova:ev-greet"))}>Sapa EV ↗</button></div></aside>
@@ -177,7 +190,7 @@ export default function Facility() {
         <div className="travel-track"><div style={{ width: `${travel}%` }} /></div>
         {!ready && <div className="loading-note" role="status">Menyiapkan ruang 3D… <button onClick={changeMode}>Baca portfolio sekarang ↗</button></div>}
         {busy && <div className="approach-note" role="status">{phase === "returning" ? "Kembali ke posisi koridor…" : `Memasuki sektor ${sectors.find(s => s.id === destination)?.number}…`}{phase === "approaching" && <button onClick={closeSector}>Batalkan / Esc</button>}</div>}
-        {phase === "room" && hasInterior(destination) && <RoomHUD room={destination} view={roomView} navigation={navigation} experience={experience} onExperience={value=>{roomProgress.current=0;navigation.current.roomCursor=0;setExperience(value);document.querySelector("canvas")?.focus({preventScroll:true});}} onView={value=>{setExperience("standard");setRoomView(value);}} onObject={onObject} onRead={() => { setRoomAction(null); setInspecting(destination); }} onReturn={closeSector} />}
+        {phase === "room" && hasInterior(destination) && <RoomHUD freeControls={<FreeExploreControls active={freeExplore} paused={freePaused} input={freeInput} onToggle={()=>{setFreeExplore(value=>!value);document.querySelector("canvas")?.focus({preventScroll:true});}}/>} room={destination} view={roomView} navigation={navigation} experience={experience} onExperience={value=>{setFreeExplore(false);roomProgress.current=0;navigation.current.roomCursor=0;setExperience(value);document.querySelector("canvas")?.focus({preventScroll:true});}} onView={value=>{setFreeExplore(false);setExperience("standard");setRoomView(value);}} onObject={onObject} onRead={() => { setRoomAction(null); setInspecting(destination); }} onReturn={closeSector} />}
       </div>
     </main>}
     <main id="portfolio" className="reading-mode" data-active={mode === "reading"}>
@@ -189,6 +202,7 @@ export default function Facility() {
     {bootActive&&<BootScreen step={bootStep} ready={ready} reducedMotion={reducedMotion} onRead={showReadingMode} onDone={finishBoot}/>}
     {!bootActive&&!inspecting&&!cvOpen&&<><button type="button" className="ev-guide-toggle" disabled={busy} aria-controls={guideOpen?"ev-guide-panel":undefined} aria-expanded={guideOpen} aria-haspopup="dialog" onClick={()=>guideOpen?setGuideOpen(false):openGuide()}><i className="ev-guide-indicator" aria-hidden="true"/>EV Guide</button>{guideOpen&&<EVGuide room={phase==="room"?destination:null} visitCount={guideCount.current} onClose={()=>setGuideOpen(false)} onNavigate={navigateWithGuide} onDetails={destination==="research"&&phase==="room"?()=>{setGuideOpen(false);setRoomAction({id:"ev-robot",label:"EV / rencana integrasi",kind:"ev"});setInspecting("research");}:undefined}/>}</>}
     {!bootActive&&!inspecting&&!cvOpen&&<><button className="ev-guide-toggle map-toggle" disabled={busy} aria-expanded={mapOpen} aria-haspopup="dialog" onClick={()=>{setGuideOpen(false);setMapOpen(value=>!value);}}>Map</button>{mapOpen&&<FacilityMap room={phase==="room"?destination:null} current={current} visited={visited} onClose={()=>setMapOpen(false)} onNavigate={navigateWithGuide}/>}</>}
+
     {cvOpen&&<CVDialog onClose={()=>setCVOpen(false)}/>}<span className="sr-only" role="status">{audio.error}</span>
     <noscript><style>{`.facility-track,.mode-button,.boot-screen{display:none!important}.reading-mode[data-active]{display:block!important}`}</style><p className="noscript-note">JavaScript tidak aktif. Portfolio tersedia dalam mode baca.</p></noscript>
   </>;

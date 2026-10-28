@@ -23,6 +23,7 @@ export function roomPose(room: RoomId, view: RoomView, experience: RoomExperienc
     const index = Math.floor(t * 4), a = targets[index], b = targets[index + 1], u = t * 4 - index, blend = u*u*(3-2*u);
     return { position: [Math.sin(angle)*1.1,2.85,-5.75+Math.cos(angle)*1.25] as [number,number,number], look: a.map((v,i)=>v+(b[i]-v)*blend) as [number,number,number] };
   }
+  if(room==="film"){if(view==="right")return {position:[0,2.7,-11.2] as [number,number,number],look:[0,2.1,-14.8] as [number,number,number]};if(view==="left")return {position:[0,2.8,-5.2] as [number,number,number],look:[0,3.6,-10] as [number,number,number]};}
   if(room==="operator"&&view==="left")return {position:[.65,2.65,-5] as [number,number,number],look:[-1.15,2.18,-9.4] as [number,number,number]};
   return roomCameras[view];
 }

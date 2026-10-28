@@ -6,7 +6,7 @@ import { Hotspot,ImagePlane } from "./RoomProps";
 export default function TechnologyWall({room,onObject}:{room:RoomId;onObject:(action:RoomAction)=>void}) {
   const list=(featuredTechnologyIds[room]||[]).map(id=>technologies.find(item=>item.id===id)).filter(item=>item?.visible);
   if(!list.length)return null;
-  const position: [number,number,number]=room==="development"?[0,3.1,-18.35]:room==="film"?[4.12,2.8,-8.5]:[-3.43,2.8,-6.4];
+  const position: [number,number,number]=room==="development"?[0,3.1,-18.35]:room==="film"?[5.22,2.8,-8.5]:[-3.43,2.8,-6.4];
   return <group position={position} rotation={[0,room==="development"?0:room==="film"?-Math.PI/2:Math.PI/2,0]}>
     <Box position={[0,0,0]} scale={[3.75,2.1,0.12]} color="#657e71"/>
     <group position={[0,1.3,0.1]}><Sign title="ARSIP TEKNOLOGI" subtitle="STATUS PENGALAMAN / DAPAT DIINSPEKSI" width={3.5} height={0.45}/></group>

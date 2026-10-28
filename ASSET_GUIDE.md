@@ -74,3 +74,11 @@ Technology SVGs in `public/assets/logos/technologies/` come from Simple Icons, w
 For authentic artwork, add owned front/back PNG or WebP images under `public/assets/jerseys/` and set the URLs (for example `/assets/jerseys/design-front.webp` and `design-back.webp`). Artwork fits the torso area without stretching; transparent margins are supported. Update the label and description only when authentic work is supplied. Rotation, zoom and front/back controls need no changes.
 
 Facility Map stores visited sector IDs in `sessionStorage` (`nova-visited`) for this tab. A room counts after camera arrival; choosing an accessible sector in Read Mode also records the visit. No account or network storage is used. EV context lines and jokes are editable in `src/data/ev-guide.ts`; all responses remain local.
+
+## Room expansion and Free Explore
+
+Film Processing Lab now measures 10.8 × 14 units (previously 8.6 × 10), with a 5.8-unit ceiling, five prints per row, wider spacing, relocated archive/RAW storage, and a grading desk at the back. Two practical lamps cover the expanded floor. Photo planes keep their original proportions and existing thumbnail sources. Other room layouts retain their central aisles; no expansion was needed there.
+
+`roomLimits` in `src/lib/free-explore.ts` matches the interior shell bounds. CameraNavigator remains the sole camera owner. On entering Free Explore it caches furniture bounding boxes from the active interior; invisible hotspots, flat signs, floor and overhead geometry are excluded. A 0.28-unit clearance and small movement steps prevent passing through walls and furniture. This is conservative bounding-box collision, not a physics simulation. Movement stays on the room's horizontal plane; drag changes yaw/pitch within safe limits. The doorway boundary is closed to free movement; use the existing Back control for corridor transitions.
+
+Free input listeners are installed only while actively exploring, pause for inspections/maps/guide/CV, and release held input on blur or cancellation. WASD and touch direction buttons share one input ref. A drag threshold suppresses accidental object clicks after looking around. Return to Guided View clears the free pose hold and uses the existing damped camera transition. No extra renderer or camera is created for Free Explore.

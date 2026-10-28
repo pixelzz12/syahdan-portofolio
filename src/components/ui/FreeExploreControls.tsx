@@ -1,0 +1,6 @@
+"use client";
+import type {FreeExploreState} from "@/lib/free-explore";
+export default function FreeExploreControls({active,paused,input,onToggle}:{active:boolean;paused:boolean;input:React.RefObject<FreeExploreState>;onToggle:()=>void}){
+ const hold=(axis:"forward"|"strafe",value:number)=>({onPointerDown:(e:React.PointerEvent<HTMLButtonElement>)=>{e.preventDefault();e.currentTarget.setPointerCapture(e.pointerId);input.current[axis]=value;},onPointerUp:()=>{input.current[axis]=0;},onPointerCancel:()=>{input.current[axis]=0;},onLostPointerCapture:()=>{input.current[axis]=0;}});
+ return <div className={`free-explore-controls ${active?"is-active":""}`} hidden={paused}><button className="utility-button" aria-pressed={active} onClick={onToggle}>{active?"Return to Guided View":"Free Explore"}</button>{active&&<><p>WASD: bergerak · drag: melihat · ESC: kembali</p><div className="free-touch-pad" role="group" aria-label="Kontrol gerak kamera"><button aria-label="Maju" {...hold("forward",1)}>↑</button><button aria-label="Geser kiri" {...hold("strafe",-1)}>←</button><button aria-label="Mundur" {...hold("forward",-1)}>↓</button><button aria-label="Geser kanan" {...hold("strafe",1)}>→</button></div></>}</div>;
+}
