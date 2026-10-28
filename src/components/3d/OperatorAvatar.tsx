@@ -28,7 +28,7 @@ export default function OperatorAvatar({onSelect,reducedMotion=false,exploring=t
  });
  const image=map?.image as HTMLImageElement|undefined;
  const aspect=image?.width&&image?.height?image.width/image.height:2/3;
- return <group ref={root} name="operator-avatar" position={[0.4,0,4]} scale={1.25} userData={{illustration:true}}>
+ return <group ref={root} name="operator-avatar" position={[0.4,0,4]} scale={1.5} userData={{illustration:true}}>
   <mesh position={[0,0.035,0]} rotation={[-Math.PI/2,0,0]} scale={[0.5,0.25,1]}><circleGeometry args={[1,24]}/><meshBasicMaterial color="#263b32" transparent opacity={0.24} depthWrite={false}/></mesh>
   <group ref={facing} position={[0,1.3,0]}>
    {map&&<mesh><planeGeometry args={[2.6*aspect,2.6]}/><meshBasicMaterial map={map} transparent alphaTest={0.25} toneMapped={false}/></mesh>}

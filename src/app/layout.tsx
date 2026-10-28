@@ -8,7 +8,7 @@ import "./profile-terminal.css";
 import "./facility-expansion.css";
 
 export const metadata: Metadata = {
-  title: "SYAHDAN — Karya & Eksperimen",
+  title: "SYAHDAN — Creative Website Developer",
   icons: { icon: "/icon.svg" },
   // NOVA NODE already provides a dark palette; prevent extension rewrites before hydration.
   other: { "darkreader-lock": "true" },
