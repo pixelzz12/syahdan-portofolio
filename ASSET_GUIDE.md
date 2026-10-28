@@ -6,7 +6,9 @@ The owner supplied `Foto 1.jpg`. The original is preserved in ignored `assets/so
 
 ## Achievement, CV, audio and project expansion
 
-Editable data: `src/data/expansion.ts`. The supplied GARUDA SMANTANG certificate is published intact as `public/assets/achievements/jejak-emas-2026.webp` with a 768px 3D thumbnail beside it. The original PNG is preserved in ignored `assets/source/achievements/jejak-emas-2026.png`. The award text, organizational role and participation entries follow the owner's supplied facts; only the first currently has a certificate image.
+Editable data: `src/data/expansion.ts`. Three authentic certificates are published with 768px thumbnails for the 3D wall. The GARUDA SMANTANG certificate uses `public/assets/achievements/jejak-emas-2026.webp`; its original PNG is preserved in ignored `assets/source/achievements/jejak-emas-2026.png`.
+
+The owner also supplied the GASSMAPALA certificate (`Foto 1.jpg`) and SMARTIMOTION VIII certificate (`sertifikat_softfile_tajam.png`). Their originals are preserved in ignored `assets/source/achievements/gassmapala-pdd-original.jpg` and `smartimotion-viii-2026-original.png`. Full, uncropped WebP derivatives are published as `gassmapala-pdd.webp` and `smartimotion-viii-2026.webp`, with matching `-thumb.webp` variants in `public/assets/achievements/`. The documented role is Koordinator Publikasi, Dokumentasi, dan Desain, masa bakti 2025/2026. The SMARTIMOTION award is specifically Peserta Terbaik 1, dated 1 February 2026 at SMK Negeri 1 Kandeman. No document content was generated or retouched. The wall now displays five frames in three rows; OSN and FLS3N retain intentional document placeholders.
 
 The owner supplied `CV_Muhammad_Syahdan_Herdhiyanta.pdf`. Its bytes are copied unchanged to `public/documents/Syahdan_CV.pdf`, and the original is retained in ignored `assets/source/documents/`. `cvDocument.src` is enabled for preview and download through the header shortcut, Operator's Quarters folder and Read Mode.
 
@@ -14,7 +16,6 @@ Still needed:
 
 | Asset | Expected public path | Enable in data |
 | --- | --- | --- |
-| GASSMAPALA PDD document | `public/assets/achievements/gassmapala-pdd.webp` | Matching achievement `certificateSrc` |
 | OSN participation document | `public/assets/achievements/osn-informatika-2024.webp` | Matching achievement `certificateSrc` |
 | FLS3N participation document | `public/assets/achievements/fls3n-2025.webp` | Matching achievement `certificateSrc` |
 | Seven ambience loops | `public/audio/corridor.mp3`, `operator.mp3`, `development.mp3`, `film.mp3`, `workshop.mp3`, `research.mp3`, `transmission.mp3` | Set each matching `ambientTracks` URL only after adding that file |
