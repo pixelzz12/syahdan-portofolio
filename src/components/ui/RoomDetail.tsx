@@ -1,4 +1,6 @@
 "use client";
+import dynamic from "next/dynamic";
+const JerseyViewer=dynamic(()=>import("./JerseyViewer"),{ssr:false,loading:()=> <p>Menyiapkan Sample Preview…</p>});
 
 import { developmentProjects, hardwareProjects, photoSlots, profile, researchProjects,type SectorId } from "@/data/portfolio";
 import { type RoomAction } from "@/data/rooms";
@@ -13,6 +15,7 @@ import {EggInspector} from "./EggInspector";
 import ProfileInspection from "./ProfileInspection";
 
 export default function RoomDetail({ action,onNavigate }: { action: RoomAction;onNavigate:(id:SectorId)=>void }) {
+  if(action.kind==="jersey")return <JerseyViewer/>;
   if(action.kind==="achievement")return <AchievementArchive selectedId={action.achievementId}/>;
   if(action.kind==="cv")return <CVPanel/>;
   if(action.kind==="secret"&&action.secretId)return <EggInspector id={action.secretId} unlocked={action.unlocked}/>;

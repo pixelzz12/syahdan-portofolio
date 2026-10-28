@@ -38,7 +38,7 @@ export function useEVIdle(reducedMotion:boolean){
   const wave=t.kind==="wave"?envelope:0,look=t.kind==="look"?envelope:0;
   body.position.y=.05+Math.sin(now*1.5)*.025;
   body.rotation.x=t.kind==="greet"?Math.sin(elapsed*5)*.09*envelope:0;
-  body.rotation.y=t.kind==="greet"?Math.sin(elapsed*2)*.12*envelope:0;
+  body.rotation.y=t.kind==="greet"?Math.sin(elapsed*2)*.12*envelope:t.kind==="look"?Math.sin(elapsed*1.8)*.1*envelope:0;
   eye.scale.set(1+look*.25,blink*(1-look*.18),1);eye.position.x=look*Math.sin(elapsed*2.3)*.05;
   hand.rotation.z=.12+wave*(2.05+Math.sin(elapsed*11)*.23);
   caption.visible=(t.kind==="code"||t.kind==="greet")&&elapsed>=0&&elapsed<3.8;

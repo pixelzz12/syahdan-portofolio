@@ -18,3 +18,14 @@ export const evGuideRooms:Record<SectorId,string>={
  research:"EV, asisten LLM lokal, dan homelab — Dalam Pengembangan.",
  transmission:"Email, Instagram, dan terminal kontak.",
 };
+
+export const evContext:Record<SectorId|"corridor",string[]>={
+ corridor:["Koridor ini suka berputar. Tenang, aku hafal keenam pintunya.","Selamat datang! Aku EV. Pilih ruangan; jangan ikuti kabel yang belum diberi label."],
+ operator:["Ini markas Syahdan. Terminal profil punya CV; aku cuma punya nomor seri.","Profil, pendidikan, dan sertifikat ada di sini. Mejanya lebih rapi daripada memoriku."],
+ development:["Klik monitor untuk melihat proyek. Bug tidak termasuk dekorasi resmi.","Development Bay! Campus Expo masih dikembangkan. Satu commit lagi… katanya."],
+ film:["Selamat datang di lab foto. Aku pandai berkedip, tetapi bukan saat memotret.","Arsip foto dan inspeksi warna ada di sini. Foto asli yang belum tersedia tetap ditandai."],
+ workshop:["Di Workshop, ide dirakit pelan-pelan. Jersey di display masih Sample Preview.","ESP32, kabel, dan jersey contoh. Tolong jangan jahit kabel ke lengan bajunya."],
+ research:["Rumahku! LLM lokal dan homelab masih Dalam Pengembangan. Aku menyapa lewat skrip lokal.","Selamat datang di R&D. Jangan khawatir: lingkaran itu bukan portal untuk tugas kuliah."],
+ transmission:["Ingin menyapa Syahdan? Email bisa disalin di terminal kontak. Aku belum punya kotak masuk.","Transmission Room. Pesanmu dikirim lewat kanal kontak, bukan antenaku yang pendek ini."],
+};
+export const evJokes=["Kenapa aku tidak minum kopi? Takut Java-nya kebanyakan.","Aku sedang belajar istirahat. Progres: sleep(1000).","Pesan rahasia: baut cadangan kusimpan di… memory not found."];

@@ -6,6 +6,7 @@ import {roomActions,type RoomAction,type RoomId} from "@/data/rooms";
 import type {SecretId} from "@/data/expansion";
 import {Box,Sign} from "./Primitives";
 import {Hotspot} from "./RoomProps";
+import JerseyModel from "./JerseyModel";
 import MaintenanceRobot from "./MaintenanceRobot";
 
 function SecretProp({id,position,rotation=[0,0,0],onObject,reducedMotion}:{id:SecretId;position:[number,number,number];rotation?:[number,number,number];onObject:(action:RoomAction)=>void;reducedMotion:boolean}){
@@ -31,7 +32,7 @@ export default function RoomExtras({room,onObject,reducedMotion}:{room:RoomId;on
   <SecretProp id="polaroid" position={[-3.05,1.92,-9.73]} rotation={[0,.2,-.08]} onObject={onObject} reducedMotion={reducedMotion}/>
  </>;
  if(room==="development")return <group><Box position={[-4.65,1.3,-15.4]} scale={[1.55,.13,.8]} color="#89927a"/><SecretProp id="terminal" position={[-4.65,1.9,-15.55]} rotation={[0,.45,0]} onObject={onObject} reducedMotion={reducedMotion}/></group>;
- if(room==="workshop")return <><MaintenanceRobot position={[-.2,0,-6.5]} scale={.7} reducedMotion={reducedMotion} action={roomActions.workshop.find(item=>item.secretId==="ev")} onObject={onObject}/><SecretProp id="circuit" position={[.15,2.9,-10.3]} onObject={onObject} reducedMotion={reducedMotion}/></>;
+ if(room==="workshop")return <><group name="jersey-display" position={[3.35,3.45,-9.3]} rotation={[0,-Math.PI/2,0]}><Box position={[0,0,-.13]} scale={[1.75,2.5,.14]} color="#394d44"/><group scale={.7}><JerseyModel/></group><group position={[0,1.08,.1]}><Sign title="SAMPLE PREVIEW" subtitle="JERSEY / KLIK UNTUK INSPEKSI" width={1.6} height={.3}/></group><Hotspot action={roomActions.workshop.find(a=>a.kind==="jersey")!} position={[0,0,.16]} size={[1.8,2.5,.3]} onObject={onObject}/></group><MaintenanceRobot position={[-.2,0,-6.5]} scale={.7} reducedMotion={reducedMotion} action={roomActions.workshop.find(item=>item.secretId==="ev")} onObject={onObject}/><SecretProp id="circuit" position={[.15,2.9,-10.3]} onObject={onObject} reducedMotion={reducedMotion}/></>;
  if(room==="research")return <SecretProp id="relay" position={[-2.75,1.66,-8.37]} rotation={[-.4,0,0]} onObject={onObject} reducedMotion={reducedMotion}/>;
  return null;
 }

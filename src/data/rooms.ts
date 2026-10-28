@@ -3,7 +3,7 @@ import {achievements,type SecretId} from "./expansion";
 
 export type RoomId = SectorId;
 export type RoomView = "overview" | "left" | "right";
-export type RoomAction = { id: string; label: string; kind: "profile" | "interests" | "education" | "project" | "gallery" | "grading" | "photo" | "experiment" | "experiment-log" | "research" | "prototype" | "ev" | "contacts" | "contact" | "journey" | "technology" | "technology-archive" | "achievement" | "cv" | "secret"; projectId?: string; slotId?: string; channel?: ContactKind; technologyId?:string; archiveRoom?:RoomId; achievementId?:string;secretId?:SecretId;unlocked?:boolean };
+export type RoomAction = { id: string; label: string; kind: "jersey" | "profile" | "interests" | "education" | "project" | "gallery" | "grading" | "photo" | "experiment" | "experiment-log" | "research" | "prototype" | "ev" | "contacts" | "contact" | "journey" | "technology" | "technology-archive" | "achievement" | "cv" | "secret"; projectId?: string; slotId?: string; channel?: ContactKind; technologyId?:string; archiveRoom?:RoomId; achievementId?:string;secretId?:SecretId;unlocked?:boolean };
 export const hasInterior = (id: SectorId | null): id is RoomId => id !== null;
 export const roomActions: Record<RoomId, RoomAction[]> = {
   development: [
@@ -31,6 +31,7 @@ export const roomActions: Record<RoomId, RoomAction[]> = {
     { id: "experiment-arduino", label: "Eksperimen Arduino", kind: "experiment", projectId: "arduino" },
     { id: "experiment-ledger", label: "Status eksperimen", kind: "experiment-log" },
     {id:"secret-ev",label:"Sapa EV",kind:"secret",secretId:"ev"},
+    {id:"jersey-display",label:"Jersey / Sample Preview",kind:"jersey"},
     {id:"secret-circuit",label:"Uji sirkuit kecil",kind:"secret",secretId:"circuit"},
   ],
   research: [

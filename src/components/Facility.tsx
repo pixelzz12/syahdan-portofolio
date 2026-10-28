@@ -14,6 +14,7 @@ import CVDialog from "./ui/CVPanel";
 import {useAmbientAudio} from "./useAmbientAudio";
 import BootScreen from "./ui/BootScreen";
 import EVGuide from "./ui/EVGuide";
+import FacilityMap from "./ui/FacilityMap";
 
 const Corridor = dynamic(() => import("./3d/Corridor"), { ssr: false });
 
@@ -44,6 +45,11 @@ export default function Facility() {
   const [experience,setExperience]=useState<RoomExperience>("standard");
   const[cvOpen,setCVOpen]=useState(false);
   const[guideOpen,setGuideOpen]=useState(false);
+  const[mapOpen,setMapOpen]=useState(false),[visited,setVisited]=useState<SectorId[]>([]),[visitsLoaded,setVisitsLoaded]=useState(false);
+  const guideCount=useRef(0);
+  const markVisited=useCallback((id:SectorId)=>setVisited(old=>old.includes(id)?old:[...old,id]),[]);
+  useEffect(()=>{try{const ids=JSON.parse(sessionStorage.getItem("nova-visited")||"[]");if(Array.isArray(ids))setVisited(sectors.filter(s=>ids.includes(s.id)).map(s=>s.id));}catch{}setVisitsLoaded(true);},[]);
+  useEffect(()=>{if(visitsLoaded)try{sessionStorage.setItem("nova-visited",JSON.stringify(visited));}catch{}},[visited,visitsLoaded]);
   const audio=useAmbientAudio(mode==="facility"?(phase==="room"&&destination?destination:"corridor"):null);
   const roomProgress=useRef(0);
   const navigation=useRef<SceneNavigation>({cursor:0,cycle:0,roomCursor:0,snapshot:null});
@@ -51,28 +57,29 @@ export default function Facility() {
   const track = useRef<HTMLElement>(null);
   const busy = phase === "approaching" || phase === "returning";
   const onProgress=useCallback((value:number)=>{const t=fraction(value);setCurrent(Math.min(5,Math.floor(t*6)));setTravel(Math.round(t*100));},[]);
-  const restoreCorridor=useCorridorScroll(track,progress,mode==="facility",Boolean(destination||inspecting||cvOpen||bootActive||guideOpen),onProgress);
-  useRoomScroll(roomProgress,phase==="room"&&!inspecting&&!cvOpen&&!guideOpen,experience);
+  const restoreCorridor=useCorridorScroll(track,progress,mode==="facility",Boolean(destination||inspecting||cvOpen||bootActive||guideOpen||mapOpen),onProgress);
+  useRoomScroll(roomProgress,phase==="room"&&!inspecting&&!cvOpen&&!guideOpen&&!mapOpen,experience);
   const onBootStep=useCallback((step:number)=>setBootStep(previous=>Math.max(previous,step)),[]);
   const markReady = useCallback(() => {setBootStep(4);setReady(true);}, []);
   const finishBoot=useCallback(()=>setBootComplete(true),[]);
   const fallback = useCallback(() => { setWebgl(false); setMode("reading"); setDestination(null); setInspecting(null); setPhase("corridor"); }, []);
   const onArrive = useCallback((id: SectorId) => {
+    markVisited(id);
     requestAnimationFrame(()=>document.querySelector("canvas")?.focus({preventScroll:true}));
     roomProgress.current=0;setExperience(id==="development"?"project":"standard");
     setDepartingRoom(null); setRoomAction(null); setRoomView("overview");
     if (hasInterior(id)) { setInspecting(null); setPhase("room"); setDirectoryOpen(false); }
     else { setInspecting(id); setPhase("inspecting"); }
-  }, []);
+  }, [markVisited]);
   const onReturn = useCallback((value:number) => { restoreCorridor(value);setDestination(null); setDepartingRoom(null); setPhase("corridor"); }, [restoreCorridor]);
-  const openGuide=useCallback(()=>{setGuideOpen(true);window.dispatchEvent(new Event("nova:ev-greet"));},[]);
+  const openGuide=useCallback(()=>{guideCount.current++;setMapOpen(false);setGuideOpen(true);window.dispatchEvent(new Event("nova:ev-greet"));},[]);
   const onObject = useCallback((action: RoomAction) => {
     audio.effect("object");
     if(action.kind==="ev"&&phase==="room"){openGuide();return;}
     setGuideOpen(false);
     if (destination && hasInterior(destination) && phase === "room") { if(action.kind==="journey"){roomProgress.current=0;navigation.current.roomCursor=0;setExperience("about");document.querySelector("canvas")?.focus({preventScroll:true});return;}setRoomAction(action); setInspecting(destination); }
   }, [destination, phase,audio.effect,openGuide]);
-  useEffect(()=>{if(inspecting||cvOpen||busy)setGuideOpen(false);},[inspecting,cvOpen,busy]);
+  useEffect(()=>{if(inspecting||cvOpen||busy){setGuideOpen(false);setMapOpen(false);}},[inspecting,cvOpen,busy]);
 
   useEffect(() => {
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -90,15 +97,15 @@ export default function Facility() {
 
 
   useEffect(() => {
-    if (!destination && !inspecting && !guideOpen) return;
+    if (!destination && !inspecting && !guideOpen && !mapOpen) return;
     const previous = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => { document.body.style.overflow = previous; };
-  }, [destination, inspecting,guideOpen]);
+  }, [destination, inspecting,guideOpen,mapOpen]);
 
   function openSector(id: SectorId, tile?:number) {
     if (busy) return;
-    setGuideOpen(false);
+    setMapOpen(false);setGuideOpen(false);
     audio.effect("door");
     if (phase === "room" && hasInterior(destination)) setDepartingRoom(destination);
     setSelectedTile(tile ?? (phase === "room" ? selectedTile : 0));
@@ -109,8 +116,9 @@ export default function Facility() {
     setInspecting(null); setPhase("approaching");
   }
   function navigateWithGuide(id:SectorId) {
+    setMapOpen(false);
     if(mode==="reading"){
-      setGuideOpen(false);
+      markVisited(id);setGuideOpen(false);
       requestAnimationFrame(()=>{
         const heading=document.getElementById(`heading-${id}`);
         document.getElementById(id)?.scrollIntoView({behavior:reducedMotion?"instant":"smooth",block:"start"});
@@ -121,12 +129,14 @@ export default function Facility() {
     }else openSector(id);
   }
   function closeSector() {
+    setMapOpen(false);
     setGuideOpen(false);
     setInspecting(null); setRoomAction(null);
     if (destination && mode === "facility" && ready) setPhase("returning");
     else { setDestination(null); setPhase("corridor"); }
   }
   function changeMode() {
+    setMapOpen(false);
     setGuideOpen(false);
     setBootComplete(false);setBootStep(webgl?1:0);
     navigation.current.cursor=0;navigation.current.cycle=0;navigation.current.roomCursor=0;progress.current=0;
@@ -137,6 +147,7 @@ export default function Facility() {
     window.scrollTo({ top: 0, behavior: "instant" });
   }
   function showReadingMode() {
+    setMapOpen(false);
     setGuideOpen(false);
     navigation.current.snapshot=null;
     setRoomAction(null); setDepartingRoom(null);
@@ -176,7 +187,8 @@ export default function Facility() {
     </main>
     {inspecting && <SectorDialog id={inspecting} detail={roomAction} inRoom={phase === "room"} onClose={phase === "room" ? () => { setInspecting(null); setRoomAction(null); } : closeSector} onExit={closeSector} onNavigate={openSector} />}
     {bootActive&&<BootScreen step={bootStep} ready={ready} reducedMotion={reducedMotion} onRead={showReadingMode} onDone={finishBoot}/>}
-    {!bootActive&&!inspecting&&!cvOpen&&<><button type="button" className="ev-guide-toggle" disabled={busy} aria-controls={guideOpen?"ev-guide-panel":undefined} aria-expanded={guideOpen} aria-haspopup="dialog" onClick={()=>guideOpen?setGuideOpen(false):openGuide()}><i className="ev-guide-indicator" aria-hidden="true"/>EV Guide</button>{guideOpen&&<EVGuide onClose={()=>setGuideOpen(false)} onNavigate={navigateWithGuide} onDetails={destination==="research"&&phase==="room"?()=>{setGuideOpen(false);setRoomAction({id:"ev-robot",label:"EV / rencana integrasi",kind:"ev"});setInspecting("research");}:undefined}/>}</>}
+    {!bootActive&&!inspecting&&!cvOpen&&<><button type="button" className="ev-guide-toggle" disabled={busy} aria-controls={guideOpen?"ev-guide-panel":undefined} aria-expanded={guideOpen} aria-haspopup="dialog" onClick={()=>guideOpen?setGuideOpen(false):openGuide()}><i className="ev-guide-indicator" aria-hidden="true"/>EV Guide</button>{guideOpen&&<EVGuide room={phase==="room"?destination:null} visitCount={guideCount.current} onClose={()=>setGuideOpen(false)} onNavigate={navigateWithGuide} onDetails={destination==="research"&&phase==="room"?()=>{setGuideOpen(false);setRoomAction({id:"ev-robot",label:"EV / rencana integrasi",kind:"ev"});setInspecting("research");}:undefined}/>}</>}
+    {!bootActive&&!inspecting&&!cvOpen&&<><button className="ev-guide-toggle map-toggle" disabled={busy} aria-expanded={mapOpen} aria-haspopup="dialog" onClick={()=>{setGuideOpen(false);setMapOpen(value=>!value);}}>Map</button>{mapOpen&&<FacilityMap room={phase==="room"?destination:null} current={current} visited={visited} onClose={()=>setMapOpen(false)} onNavigate={navigateWithGuide}/>}</>}
     {cvOpen&&<CVDialog onClose={()=>setCVOpen(false)}/>}<span className="sr-only" role="status">{audio.error}</span>
     <noscript><style>{`.facility-track,.mode-button,.boot-screen{display:none!important}.reading-mode[data-active]{display:block!important}`}</style><p className="noscript-note">JavaScript tidak aktif. Portfolio tersedia dalam mode baca.</p></noscript>
   </>;

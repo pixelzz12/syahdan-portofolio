@@ -1,0 +1,2 @@
+// Replace paths with authentic front/back artwork under public/assets/jerseys/.
+export const jerseyDesign={name:"NOVA / Workshop 01",label:"Sample Preview",concept:"Eksperimen panel utilitarian dengan aksen amber dan teal. Desain sementara, bukan karya asli portofolio.",colors:["#364f49","#c2aa73","#b9c7af"],details:"Potongan lengan pendek, garis panel diagonal, dan nomor contoh 01.",frontSrc:null as string|null,backSrc:null as string|null};

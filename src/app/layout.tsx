@@ -5,6 +5,7 @@ import "./expansion.css";
 import "./boot.css";
 import "./ev-guide.css";
 import "./profile-terminal.css";
+import "./facility-expansion.css";
 
 export const metadata: Metadata = {
   title: "SYAHDAN — Karya & Eksperimen",

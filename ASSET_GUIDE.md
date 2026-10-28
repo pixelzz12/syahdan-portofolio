@@ -66,3 +66,11 @@ Technology SVGs in `public/assets/logos/technologies/` come from Simple Icons, w
 ## Models
 
 `public/assets/models/` is reserved for future approved lightweight models. Current rooms require no downloaded GLB assets. Do not add complex character models or claim EV has a working AI integration.
+
+## Jersey Sample Preview
+
+`src/data/jersey.ts` configures the sample title, concept, colors, details and optional `frontSrc` / `backSrc`. The current procedural jersey is a clearly labelled Sample Preview, not an authentic portfolio design. Room display and inspection share `JerseyModel`; no duplicate model or image files are required.
+
+For authentic artwork, add owned front/back PNG or WebP images under `public/assets/jerseys/` and set the URLs (for example `/assets/jerseys/design-front.webp` and `design-back.webp`). Artwork fits the torso area without stretching; transparent margins are supported. Update the label and description only when authentic work is supplied. Rotation, zoom and front/back controls need no changes.
+
+Facility Map stores visited sector IDs in `sessionStorage` (`nova-visited`) for this tab. A room counts after camera arrival; choosing an accessible sector in Read Mode also records the visit. No account or network storage is used. EV context lines and jokes are editable in `src/data/ev-guide.ts`; all responses remain local.
