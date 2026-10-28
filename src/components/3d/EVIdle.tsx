@@ -24,8 +24,8 @@ export function useEVIdle(reducedMotion:boolean){
  useFrame(({clock,camera},delta)=>{
   const body=robot.current,eye=eyes.current,hand=arm.current,caption=bubble.current;if(!body||!eye||!hand||!caption)return;
   const now=clock.elapsedTime,t=timing.current;
-  if(pendingGreeting.current){pendingGreeting.current=false;t.kind="code";t.actionStart=now;t.nextAction=now+7;t.blinkAge=0;t.message=greetingCount.current++%3;manualUntil.current=now+3.8;writeBubble(canvas,snippets[t.message]);map.needsUpdate=true;}
-  if(reducedMotion){body.position.y=0;eye.scale.set(1,1,1);eye.position.x=0;hand.rotation.z=.12;caption.visible=now<manualUntil.current;if(caption.visible&&caption.parent){caption.parent.worldToLocal(local.copy(camera.position));caption.rotation.y=Math.atan2(local.x-caption.position.x,local.z-caption.position.z);}body.userData.idle={blink:1,wave:0,bubble:caption.visible,message:caption.visible?snippets[t.message]:null};return;}
+  if(pendingGreeting.current){pendingGreeting.current=false;t.kind="greet";t.actionStart=now;t.nextAction=now+7;t.blinkAge=0;t.message=greetingCount.current++%3;manualUntil.current=now+3.8;writeBubble(canvas,snippets[t.message]);map.needsUpdate=true;}
+  if(reducedMotion){body.position.y=0;body.rotation.set(0,0,0);eye.scale.set(1,1,1);eye.position.x=0;hand.rotation.z=.12;caption.visible=now<manualUntil.current;if(caption.visible&&caption.parent){caption.parent.worldToLocal(local.copy(camera.position));caption.rotation.y=Math.atan2(local.x-caption.position.x,local.z-caption.position.z);}body.userData.idle={blink:1,wave:0,bubble:caption.visible,message:caption.visible?snippets[t.message]:null};return;}
   if(now>=t.blink){t.blinkAge=0;t.blink=now+(Math.random()<.2?.36:2.5+Math.random()*3.5);}
   // Keep a blink visible for several frames even on slower mobile GPUs.
   t.blinkAge+=Math.min(delta,.06);const blink=t.blinkAge<.22?1-.96*Math.sin(Math.PI*t.blinkAge/.22):1;
@@ -37,9 +37,11 @@ export function useEVIdle(reducedMotion:boolean){
   const elapsed=now-t.actionStart,envelope=THREE.MathUtils.smootherstep(elapsed,0,.45)*(1-THREE.MathUtils.smootherstep(elapsed,2.3,3.2));
   const wave=t.kind==="wave"?envelope:0,look=t.kind==="look"?envelope:0;
   body.position.y=.05+Math.sin(now*1.5)*.025;
+  body.rotation.x=t.kind==="greet"?Math.sin(elapsed*5)*.09*envelope:0;
+  body.rotation.y=t.kind==="greet"?Math.sin(elapsed*2)*.12*envelope:0;
   eye.scale.set(1+look*.25,blink*(1-look*.18),1);eye.position.x=look*Math.sin(elapsed*2.3)*.05;
   hand.rotation.z=.12+wave*(2.05+Math.sin(elapsed*11)*.23);
-  caption.visible=t.kind==="code"&&elapsed>=0&&elapsed<3.8;
+  caption.visible=(t.kind==="code"||t.kind==="greet")&&elapsed>=0&&elapsed<3.8;
   if(caption.visible&&caption.parent){caption.parent.worldToLocal(local.copy(camera.position));caption.rotation.y=Math.atan2(local.x-caption.position.x,local.z-caption.position.z);caption.scale.setScalar(.94+.06*THREE.MathUtils.smootherstep(elapsed,0,.35));}
   body.userData.idle={blink,wave,bubble:caption.visible,message:caption.visible?snippets[t.message]:null};
  });

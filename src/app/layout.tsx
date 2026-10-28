@@ -3,6 +3,7 @@ import "./globals.css";
 import "./redesign.css";
 import "./expansion.css";
 import "./boot.css";
+import "./ev-guide.css";
 
 export const metadata: Metadata = {
   title: "SYAHDAN — Karya & Eksperimen",
