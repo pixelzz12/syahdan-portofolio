@@ -1,8 +1,7 @@
 "use client";
 
-import { developmentProjects, hardwareProjects, photoSlots, profile, researchProjects } from "@/data/portfolio";
+import { developmentProjects, hardwareProjects, photoSlots, profile, researchProjects,type SectorId } from "@/data/portfolio";
 import { type RoomAction } from "@/data/rooms";
-import PortfolioContent from "./PortfolioContent";
 import PhotographyGallery from "./PhotographyGallery";
 import { GradingDesk } from "./PhotoInspector";
 import ContactPanel from "./ContactPanel";
@@ -11,8 +10,9 @@ import AchievementArchive from "./AchievementArchive";
 import {ProjectDetail} from "./ProjectPresentation";
 import {CVPanel} from "./CVPanel";
 import {EggInspector} from "./EggInspector";
+import ProfileInspection from "./ProfileInspection";
 
-export default function RoomDetail({ action }: { action: RoomAction }) {
+export default function RoomDetail({ action,onNavigate }: { action: RoomAction;onNavigate:(id:SectorId)=>void }) {
   if(action.kind==="achievement")return <AchievementArchive selectedId={action.achievementId}/>;
   if(action.kind==="cv")return <CVPanel/>;
   if(action.kind==="secret"&&action.secretId)return <EggInspector id={action.secretId} unlocked={action.unlocked}/>;
@@ -37,7 +37,7 @@ export default function RoomDetail({ action }: { action: RoomAction }) {
     if (!project) return <p>Data proyek belum tersedia.</p>;
     return <ProjectDetail project={project}/>;
   }
-  if (action.kind === "profile") return <PortfolioContent id="operator" />;
+  if (action.kind === "profile") return <ProfileInspection onNavigate={onNavigate}/>;
   if (action.kind === "education") return <div className="terminal-detail"><span className="eyebrow">Pendidikan</span><h3>{profile.university}</h3><p className="section-intro">{profile.faculty}<br />{profile.program}</p><p>Lokasi di dinding ruangan disediakan untuk satu logo resmi Universitas Airlangga. {profile.universityLogo ? "Aset resmi telah ditambahkan melalui data profil." : "Logo resmi belum diberikan; saat ini hanya nama universitas yang ditampilkan."}</p></div>;
   if (action.kind === "interests") return <>{action.id==="operator-notebook"&&<EggInspector id="notebook"/>}<p className="section-intro">Aku {profile.shortName}, mahasiswa {profile.program} di {profile.university}. Aku senang mengeksplorasi hubungan antara kode, gambar, dan eksperimen teknologi.</p><div className="project-grid"><article className="project-card"><h3>Web development</h3><p>Ide, antarmuka, dan proses membangun website. Proyek serta status aktual dapat dibaca di Development Bay.</p></article><article className="project-card"><h3>Fotografi</h3><p>Landscape, street, event, dan cinematic. Foto asli akan ditambahkan ke Film Processing Lab setelah siap dipublikasikan.</p></article><article className="project-card"><h3>Eksperimen teknologi</h3><p>Ruang belajar untuk mikrokontroler, asisten LLM lokal, dan homelab. Dokumentasi serta status pengerjaan tetap ditandai sesuai data yang tersedia.</p></article></div></>;
   if (action.kind === "gallery") return <PhotographyGallery />;

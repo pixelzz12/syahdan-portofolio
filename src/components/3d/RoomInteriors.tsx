@@ -15,6 +15,7 @@ import type { RoomExperience,SceneNavigation } from "@/lib/scene-navigation";
 import { assetTexture } from "@/lib/assets";
 import AchievementWall from "./AchievementWall";
 import RoomExtras from "./RoomExtras";
+import DigitalProfileTerminal from "./DigitalProfileTerminal";
 
 function Shell({ room }: { room: RoomId }) {
   const film = room === "film";
@@ -60,7 +61,7 @@ function Development({ onObject }: { onObject: (action: RoomAction) => void }) {
 function Operator({ onObject }: { onObject: (action: RoomAction) => void }) {
   return <>
     <Desk position={[-1.15, 0, -9.4]} width={3.8}>
-      <Monitor title="SYAHDAN / PROFILE" subtitle="WEB / PHOTOGRAPHY / TECHNOLOGY" action={roomActions.operator[0]} onObject={onObject} width={1.6} />
+      <DigitalProfileTerminal onObject={onObject}/>
       <group position={[-1.15, 1.58, 0.16]}>
         <Box position={[0, 0, 0]} scale={[0.45, 0.33, 0.23]} color="#384845" />
         <mesh position={[0.04, 0, 0.2]} rotation={[Math.PI / 2, 0, 0]}><cylinderGeometry args={[0.14, 0.14, 0.23, 12]} /><meshStandardMaterial color="#222e30" roughness={1} /></mesh>

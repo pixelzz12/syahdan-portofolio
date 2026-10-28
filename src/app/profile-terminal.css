@@ -1,0 +1,18 @@
+.profile-terminal-identity{display:grid;grid-template-columns:minmax(150px,200px) minmax(0,1fr);gap:26px;align-items:center}
+.profile-terminal-portrait{aspect-ratio:3/4;display:grid;place-items:center;overflow:hidden;background:#182924;border:1px solid #a5b49766;padding:6px}
+.profile-terminal-portrait img{display:block;width:100%;height:100%;min-height:0;object-fit:contain}
+.profile-terminal-portrait>span{font:11px/1.8 "Courier New",monospace;text-align:center;padding:15px;color:#aebca8}
+.profile-terminal-identity .eyebrow{font-size:9px;letter-spacing:1px;color:#b7be9e}
+.profile-terminal-identity h3{font-size:clamp(23px,2.6vw,31px);font-weight:500;line-height:1.3;margin:12px 0;color:#e0d6b9;overflow-wrap:anywhere}
+.profile-terminal-identity p{font-size:12px;line-height:1.7;color:#b5c4ad}
+.profile-terminal-identity dl{margin-top:20px;padding-top:16px;border-top:1px solid #a5b49733}
+.profile-terminal-identity dt{font:10px "Courier New",monospace;color:#bca97c;text-transform:uppercase;letter-spacing:1px}
+.profile-terminal-identity dd{margin:8px 0 0;font-size:13px;line-height:1.8;color:#c8d1bd}
+.profile-terminal-description{font-size:13px;line-height:1.9;margin:24px 0;color:#c8d1bd}
+.profile-terminal-inspection h4{font:11px "Courier New",monospace;text-transform:uppercase;letter-spacing:1px;color:#bca97c;margin-bottom:12px}
+.profile-terminal-focus{list-style:none;display:flex;gap:8px;flex-wrap:wrap;margin:0;padding:0}
+.profile-terminal-focus li{font-size:11px;line-height:1.6;padding:7px 10px;border:1px solid #a5b49744;background:#8196710a}
+.profile-terminal-tools{margin-top:24px;border-top:1px solid #a5b49733;padding-top:16px}
+.profile-terminal-tools .cv-panel{margin:0;padding:0;border:0;background:transparent}
+.profile-terminal-tools .utility-actions{margin:8px 0;gap:8px}.profile-terminal-tools .utility-button{min-height:44px;text-align:center;line-height:1.5}
+@media(max-width:600px){.profile-terminal-identity{grid-template-columns:1fr;gap:20px}.profile-terminal-portrait{width:min(220px,100%);justify-self:center}.profile-terminal-identity h3{font-size:25px}.profile-terminal-identity .eyebrow{font-size:8px}.profile-terminal-description{margin:20px 0}.profile-terminal-tools .utility-actions{display:grid;grid-template-columns:1fr 1fr}.profile-terminal-tools .utility-actions>:last-child{grid-column:1/-1}}

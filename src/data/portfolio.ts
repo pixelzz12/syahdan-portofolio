@@ -13,6 +13,7 @@ export const profile = {
   name: "Muhammad Syahdan Herdhiyanta",
   shortName: "Syahdan",
   role: "Mahasiswa & penjelajah teknologi",
+  focusAreas: ["Web development", "Fotografi", "Eksperimen teknologi"],
   introduction: "Halo, aku Syahdan. Mahasiswa Teknik Informatika Universitas Airlangga yang suka mengeksplorasi berbagai eksperimen teknologi dan menyukai fotografi.",
   university: "Universitas Airlangga",
   faculty: "Fakultas Vokasi",
