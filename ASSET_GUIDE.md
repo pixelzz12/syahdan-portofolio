@@ -8,11 +8,12 @@ The owner supplied `Foto 1.jpg`. The original is preserved in ignored `assets/so
 
 Editable data: `src/data/expansion.ts`. The supplied GARUDA SMANTANG certificate is published intact as `public/assets/achievements/jejak-emas-2026.webp` with a 768px 3D thumbnail beside it. The original PNG is preserved in ignored `assets/source/achievements/jejak-emas-2026.png`. The award text, organizational role and participation entries follow the owner's supplied facts; only the first currently has a certificate image.
 
+The owner supplied `CV_Muhammad_Syahdan_Herdhiyanta.pdf`. Its bytes are copied unchanged to `public/documents/Syahdan_CV.pdf`, and the original is retained in ignored `assets/source/documents/`. `cvDocument.src` is enabled for preview and download through the header shortcut, Operator's Quarters folder and Read Mode.
+
 Still needed:
 
 | Asset | Expected public path | Enable in data |
 | --- | --- | --- |
-| Authentic CV PDF | `public/documents/Syahdan_CV.pdf` | `cvDocument.src = "/documents/Syahdan_CV.pdf"` |
 | GASSMAPALA PDD document | `public/assets/achievements/gassmapala-pdd.webp` | Matching achievement `certificateSrc` |
 | OSN participation document | `public/assets/achievements/osn-informatika-2024.webp` | Matching achievement `certificateSrc` |
 | FLS3N participation document | `public/assets/achievements/fls3n-2025.webp` | Matching achievement `certificateSrc` |

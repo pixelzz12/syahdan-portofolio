@@ -8,8 +8,8 @@ export const achievements:Achievement[]=[
  {id:"fls3n",title:"Partisipasi FLS3N 2025",shortTitle:"FLS3N / PARTISIPASI",category:"Partisipasi",year:"2025",description:"Partisipasi FLS3N 2025.",certificateSrc:null as string|null,expectedFile:"/assets/achievements/fls3n-2025.webp"},
 ];
 
-// Enable only after the authentic file exists in public/documents/.
-export const cvDocument={src:null as string|null,expectedFile:"/documents/Syahdan_CV.pdf",filename:"Syahdan_CV.pdf"};
+// Original PDF supplied by the owner; keep the download bytes unchanged.
+export const cvDocument={src:"/documents/Syahdan_CV.pdf" as string|null,expectedFile:"/documents/Syahdan_CV.pdf",filename:"Syahdan_CV.pdf"};
 export type AmbienceRoom=SectorId|"corridor";
 export const ambientTracks:Record<AmbienceRoom,string|null>={corridor:null,operator:null,development:null,film:null,workshop:null,research:null,transmission:null};
 export const ambientEffects:{door:string|null;object:string|null}={door:null,object:null};

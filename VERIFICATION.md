@@ -1,5 +1,9 @@
 # Verifikasi NOVA NODE
 
+## Authentic CV enabled
+
+The owner's 366,449-byte PDF is published unchanged at `/documents/Syahdan_CV.pdf`. The source and published file are byte-identical. Production build including TypeScript passed. `.qa/cv-live-test.cjs` passed desktop and touch mobile: valid PDF status/MIME, header preview request and iframe, actual download with the expected filename and original bytes, closing preview removes the iframe, modal focus restoration, Operator's Quarters CV action, and Read Mode access without horizontal overflow or browser errors.
+
 ## Achievement wall, secrets, audio, CV, project sketches and intro stability
 
 The final production build and explicit `npm run typecheck` passed. No lint script or ESLint configuration is present in this repository, so lint is not reported as passing. No dependencies were added.
