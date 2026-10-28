@@ -1,5 +1,9 @@
 # SYAHDAN asset workflow
 
+## Authentic profile portrait
+
+The owner supplied `Foto 1.jpg`. The original is preserved in ignored `assets/source/profile/syahdan-profile-original.jpg`. The full, uncropped photograph is optimized to `public/assets/profile/syahdan-profile-v1.webp` (720 × 960, quality 88) and configured in `profile.portrait`. It appears in the operator profile and Read Mode; the illustrated 3D avatar remains a separate illustration. No generative edits or retouching were applied.
+
 ## Achievement, CV, audio and project expansion
 
 Editable data: `src/data/expansion.ts`. The supplied GARUDA SMANTANG certificate is published intact as `public/assets/achievements/jejak-emas-2026.webp` with a 768px 3D thumbnail beside it. The original PNG is preserved in ignored `assets/source/achievements/jejak-emas-2026.png`. The award text, organizational role and participation entries follow the owner's supplied facts; only the first currently has a certificate image.

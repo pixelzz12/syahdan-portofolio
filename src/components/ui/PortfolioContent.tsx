@@ -17,7 +17,7 @@ function SectorContent({ id }: { id: SectorId }) {
   switch (id) {
     case "operator": return <>
       <p className="section-intro">{profile.introduction}</p>
-      <div className="operator-grid"><div className="portrait-slot">{profile.portrait ? <img src={profile.portrait} alt={profile.name} /> : <><div className="operator-mark" aria-hidden="true">S<span>↗</span></div><span className="mono">OPERATOR / SYAHDAN</span><small>Foto profil belum ditambahkan</small></>}</div>
+      <div className="operator-grid"><div className="portrait-slot">{profile.portrait ? <img src={profile.portrait} alt={`Foto profil ${profile.name}`} width="720" height="960" loading="lazy" /> : <><div className="operator-mark" aria-hidden="true">S<span>↗</span></div><span className="mono">OPERATOR / SYAHDAN</span><small>Foto profil belum ditambahkan</small></>}</div>
       <div className="operator-info"><span className="eyebrow">Di balik fasilitas</span><h3>{profile.name}</h3><p>{profile.role}</p><div className="education">{profile.universityLogo && <img src={profile.universityLogo} alt="Logo resmi Universitas Airlangga" width="56" height="56" />}<span className="mono">PENDIDIKAN</span><h4>{profile.university}</h4><p>{profile.faculty}<br />{profile.program}</p></div></div></div>
       <div className="interest-tags"><span>Web development</span><span>Fotografi</span><span>Eksperimen teknologi</span></div>
       <AchievementArchive/><CVPanel/>

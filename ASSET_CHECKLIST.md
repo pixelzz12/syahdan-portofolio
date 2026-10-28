@@ -1,7 +1,7 @@
 # Assets still needed
 
 - [ ] Official Universitas Airlangga logo: `assets/source/logos/unair-official.svg`.
-- [ ] Authentic profile portrait: `assets/source/profile/syahdan.jpg`.
+- [x] Authentic profile portrait supplied: `assets/source/profile/syahdan-profile-original.jpg`; published as `public/assets/profile/syahdan-profile-v1.webp`.
 - [ ] Four real project screenshots: `assets/source/projects/personal.png`, `campus-expo.png`, `coding.png`, `ui-ux.png`.
 - [ ] Up to 16 authentic photographs: `assets/source/photography/01.jpg` through `16.jpg`, with truthful titles, alt text, captions and categories in portfolio data.
 - [ ] Matching before-grading exports where available: `assets/source/photography/grading/NN-before.jpg`. Confirm identical framing and dimensions.

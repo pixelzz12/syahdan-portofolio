@@ -17,7 +17,7 @@ export const profile = {
   university: "Universitas Airlangga",
   faculty: "Fakultas Vokasi",
   program: "Teknik Informatika",
-  portrait: null as string | null,
+  portrait: "/assets/profile/syahdan-profile-v1.webp" as string | null,
   universityLogo: "/assets/logos/unair-official.png" as string | null,
 };
 
