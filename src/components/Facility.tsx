@@ -12,6 +12,7 @@ import { useCorridorScroll,useRoomScroll } from "./useExplorationScroll";
 import { fraction,type RoomExperience,type SceneNavigation } from "@/lib/scene-navigation";
 import CVDialog from "./ui/CVPanel";
 import {useAmbientAudio} from "./useAmbientAudio";
+import BootScreen from "./ui/BootScreen";
 
 const Corridor = dynamic(() => import("./3d/Corridor"), { ssr: false });
 
@@ -26,6 +27,8 @@ export default function Facility() {
   const [mode, setMode] = useState<"facility" | "reading">("facility");
   const [webgl, setWebgl] = useState<boolean | null>(null);
   const [ready, setReady] = useState(false);
+  const[bootStep,setBootStep]=useState(0),[bootComplete,setBootComplete]=useState(false);
+  const bootActive=mode==="facility"&&!bootComplete;
   const [reducedMotion, setReducedMotion] = useState(false);
   const [destination, setDestination] = useState<SectorId | null>(null);
   const [inspecting, setInspecting] = useState<SectorId | null>(null);
@@ -46,9 +49,11 @@ export default function Facility() {
   const track = useRef<HTMLElement>(null);
   const busy = phase === "approaching" || phase === "returning";
   const onProgress=useCallback((value:number)=>{const t=fraction(value);setCurrent(Math.min(5,Math.floor(t*6)));setTravel(Math.round(t*100));},[]);
-  const restoreCorridor=useCorridorScroll(track,progress,mode==="facility",Boolean(destination||inspecting||cvOpen),onProgress);
+  const restoreCorridor=useCorridorScroll(track,progress,mode==="facility",Boolean(destination||inspecting||cvOpen||bootActive),onProgress);
   useRoomScroll(roomProgress,phase==="room"&&!inspecting&&!cvOpen,experience);
-  const markReady = useCallback(() => setReady(true), []);
+  const onBootStep=useCallback((step:number)=>setBootStep(previous=>Math.max(previous,step)),[]);
+  const markReady = useCallback(() => {setBootStep(4);setReady(true);}, []);
+  const finishBoot=useCallback(()=>setBootComplete(true),[]);
   const fallback = useCallback(() => { setWebgl(false); setMode("reading"); setDestination(null); setInspecting(null); setPhase("corridor"); }, []);
   const onArrive = useCallback((id: SectorId) => {
     requestAnimationFrame(()=>document.querySelector("canvas")?.focus({preventScroll:true}));
@@ -71,7 +76,7 @@ export default function Facility() {
       const canvas = document.createElement("canvas");
       const context = canvas.getContext("webgl2") || canvas.getContext("webgl");
       if (!context) fallback();
-      else { setWebgl(true); context.getExtension("WEBGL_lose_context")?.loseContext(); }
+      else { setBootStep(1);setWebgl(true); context.getExtension("WEBGL_lose_context")?.loseContext(); }
     } catch { fallback(); }
     return () => { media.removeEventListener("change", update); };
   }, [fallback]);
@@ -102,6 +107,8 @@ export default function Facility() {
     else { setDestination(null); setPhase("corridor"); }
   }
   function changeMode() {
+    setBootComplete(false);setBootStep(webgl?1:0);
+    navigation.current.cursor=0;navigation.current.cycle=0;navigation.current.roomCursor=0;progress.current=0;
     navigation.current.snapshot=null;
     setRoomAction(null); setDepartingRoom(null);
     setInspecting(null); setDestination(null); setPhase("corridor"); setReady(false);
@@ -129,7 +136,7 @@ export default function Facility() {
     <header className="site-header"><a href="#" className="brand" aria-label="SYAHDAN, kembali ke awal" onClick={event=>{event.preventDefault();navigation.current.snapshot=null;setInspecting(null);setDestination(null);setPhase("corridor");restoreCorridor(Math.floor(navigation.current.cursor));}}><span>SYAHDAN<small>NOVA NODE / PORTFOLIO</small></span></a><div className="header-right"><span className="system-label"><i className="signal-dot" /> KARYA / EKSPERIMEN</span><button className="utility-button header-cv" disabled={busy} onClick={()=>setCVOpen(true)} aria-label="Preview dan Download CV"><span className="header-cv-long">Download </span>CV ↓</button><button className="utility-button audio-control" disabled={!audio.available} onClick={audio.toggle} aria-pressed={audio.enabled} aria-label={!audio.available?"Ambience belum tersedia":audio.enabled?"Matikan audio lingkungan":"Nyalakan audio lingkungan"} title={!audio.available?"Ambience belum tersedia":audio.enabled?"Matikan audio":"Nyalakan audio"}>{audio.enabled?"♫":"♪"}</button><button className="mode-button" onClick={changeMode} disabled={webgl === false && mode === "reading"}><span aria-hidden="true">{mode === "facility" ? "☷" : "◇"}</span> {mode === "facility" ? "Read Mode" : webgl === false ? "Read Mode aktif" : "Jelajahi 3D"}</button></div></header>
     {mode === "facility" && <main className="facility-track" ref={track}>
       <div className="facility-viewport" data-phase={phase} data-travelling={travel > 3}>
-        <div className="scene-container" style={{visibility:ready?"visible":"hidden"}}>{webgl && <SceneBoundary onFailure={fallback}><Corridor progress={progress} navigation={navigation} roomProgress={roomProgress} experience={experience} selectedTile={selectedTile} departingTile={departingTile} selectedAction={roomAction} destination={destination} departingRoom={departingRoom} phase={phase} roomView={roomView} inspectionOpen={Boolean(inspecting)} onObject={onObject} reducedMotion={reducedMotion} onDoor={openSector} onReady={markReady} onFailure={fallback} onArrive={onArrive} onReturn={onReturn} /></SceneBoundary>}</div>
+        <div className="scene-container" style={{visibility:ready?"visible":"hidden"}}>{webgl && <SceneBoundary onFailure={fallback}><Corridor progress={progress} navigation={navigation} roomProgress={roomProgress} experience={experience} selectedTile={selectedTile} departingTile={departingTile} selectedAction={roomAction} destination={destination} departingRoom={departingRoom} phase={phase} roomView={roomView} inspectionOpen={Boolean(inspecting)} onObject={onObject} reducedMotion={reducedMotion} onDoor={openSector} onReady={markReady} onBootStep={onBootStep} onFailure={fallback} onArrive={onArrive} onReturn={onReturn} /></SceneBoundary>}</div>
         <div className="scene-shade" />
         <h1 className="sr-only">SYAHDAN — portfolio Muhammad Syahdan Herdhiyanta</h1>
         <aside className="directory" aria-label="Direktori enam sektor" data-open={directoryOpen}><button className="directory-heading" aria-expanded={directoryOpen} aria-controls="facility-sectors" onClick={() => setDirectoryOpen(value => !value)}><span className="mono">FACILITY DIRECTORY</span><span className="mono">06 SECTORS {directoryOpen ? "−" : "+"}</span></button><nav id="facility-sectors" hidden={!directoryOpen}>{sectors.map((sector, index) => <button key={sector.id} disabled={busy} className={`directory-item ${current === index ? "active" : ""}`} onClick={() => openSector(sector.id)} aria-label={`Buka sektor ${sector.number}: ${sector.name}`}><span className="directory-number">{sector.number}</span><span><strong>{sector.name}</strong><small>{sector.label}</small></span><span className="directory-arrow" aria-hidden="true">↗</span></button>)}</nav><div className="directory-foot" hidden={!directoryOpen}><i className="signal-dot" /><span>Enam ruang. Pilih untuk masuk.</span><button className="text-link ev-greeting-button" onClick={()=>window.dispatchEvent(new Event("nova:ev-greet"))}>Sapa EV ↗</button></div></aside>
@@ -146,7 +153,8 @@ export default function Facility() {
       <footer className="reading-footer"><span className="brand-text">SYAHDAN</span><p>© {new Date().getFullYear()} Muhammad Syahdan Herdhiyanta</p><a href="#portfolio">Kembali ke atas ↑</a></footer>
     </main>
     {inspecting && <SectorDialog id={inspecting} detail={roomAction} inRoom={phase === "room"} onClose={phase === "room" ? () => { setInspecting(null); setRoomAction(null); } : closeSector} onExit={closeSector} onNavigate={openSector} />}
+    {bootActive&&<BootScreen step={bootStep} ready={ready} reducedMotion={reducedMotion} onRead={showReadingMode} onDone={finishBoot}/>}
     {cvOpen&&<CVDialog onClose={()=>setCVOpen(false)}/>}<span className="sr-only" role="status">{audio.error}</span>
-    <noscript><style>{`.facility-track,.mode-button{display:none!important}.reading-mode[data-active]{display:block!important}`}</style><p className="noscript-note">JavaScript tidak aktif. Portfolio tersedia dalam mode baca.</p></noscript>
+    <noscript><style>{`.facility-track,.mode-button,.boot-screen{display:none!important}.reading-mode[data-active]{display:block!important}`}</style><p className="noscript-note">JavaScript tidak aktif. Portfolio tersedia dalam mode baca.</p></noscript>
   </>;
 }

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import "./redesign.css";
 import "./expansion.css";
+import "./boot.css";
 
 export const metadata: Metadata = {
   title: "SYAHDAN — Karya & Eksperimen",

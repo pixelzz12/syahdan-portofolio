@@ -1,7 +1,7 @@
 "use client";
 
 import { Canvas, ThreeEvent, useFrame, useThree } from "@react-three/fiber";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { type SectorId } from "@/data/portfolio";
 import { bays, doors as placements, type FacilityPhase } from "@/lib/facility-layout";
@@ -18,7 +18,7 @@ import LoopGate from "./LoopGate";
 import PeriodicLights from "./PeriodicLights";
 import type { RoomExperience, SceneNavigation } from "@/lib/scene-navigation";
 
-type Props = { progress:React.RefObject<number>; navigation:React.RefObject<SceneNavigation>; roomProgress:React.RefObject<number>; experience:RoomExperience; selectedTile:number; departingTile:number; destination:SectorId|null; departingRoom:RoomId|null; phase:FacilityPhase; roomView:RoomView; inspectionOpen:boolean; selectedAction:RoomAction|null; reducedMotion:boolean; onObject:(action:RoomAction)=>void; onDoor:(id:SectorId,copy?:number)=>void; onReady:()=>void; onFailure:()=>void; onArrive:(id:SectorId)=>void; onReturn:(progress:number)=>void };
+type Props = { progress:React.RefObject<number>; navigation:React.RefObject<SceneNavigation>; roomProgress:React.RefObject<number>; experience:RoomExperience; selectedTile:number; departingTile:number; destination:SectorId|null; departingRoom:RoomId|null; phase:FacilityPhase; roomView:RoomView; inspectionOpen:boolean; selectedAction:RoomAction|null; reducedMotion:boolean; onObject:(action:RoomAction)=>void; onDoor:(id:SectorId,copy?:number)=>void; onReady:()=>void; onBootStep:(step:number)=>void; onAvatarReady?:()=>void; onFailure:()=>void; onArrive:(id:SectorId)=>void; onReturn:(progress:number)=>void };
 function Door({ item, onDoor, onObject, active, reducedMotion, copy, sceneProps }: { item: typeof placements[number]; onDoor: Props["onDoor"]; onObject: Props["onObject"]; active: boolean; reducedMotion: boolean; copy:number; sceneProps:Props }) {
   const interior = hasInterior(item.id) ? item.id : null;
   const [hovered, setHovered] = useState(false);
@@ -183,10 +183,13 @@ function ServiceProps() {
 function CorridorCopy({copy,props}:{copy:number;props:Props}) {
   const group=useRef<THREE.Group>(null);
   useFrame(({camera})=>{if(group.current)group.current.visible=copy===0||(copy===1?camera.position.z<-42:camera.position.z>0)||(props.destination!==null&&props.selectedTile===copy)||(props.departingRoom!==null&&props.departingTile===copy);});
-  return <group ref={group} position={[0,0,-copy*88]}><Architecture /><WallDetails /><SpatialTitle reducedMotion={props.reducedMotion} exploring={props.phase==="corridor"} /><LoopGate copy={copy} reducedMotion={props.reducedMotion} />{placements.map(item=><Door key={item.id} item={item} copy={copy} sceneProps={props} onDoor={props.onDoor} onObject={props.onObject} active={(props.destination===item.id&&props.selectedTile===copy)||(props.departingRoom===item.id&&props.departingTile===copy)} reducedMotion={props.reducedMotion} />)}<ServiceProps /><UniversityPlaque /><OperatorAvatar onLoaded={copy===0?props.onReady:undefined} reducedMotion={props.reducedMotion} exploring={props.phase==="corridor"} onSelect={()=>{if(props.phase==="corridor")props.onDoor("operator",copy);}} /><MaintenanceRobot reducedMotion={props.reducedMotion} position={[-2.5,0,2.8]} /></group>;
+  return <group ref={group} position={[0,0,-copy*88]}><Architecture /><WallDetails /><SpatialTitle reducedMotion={props.reducedMotion} exploring={props.phase==="corridor"} /><LoopGate copy={copy} reducedMotion={props.reducedMotion} />{placements.map(item=><Door key={item.id} item={item} copy={copy} sceneProps={props} onDoor={props.onDoor} onObject={props.onObject} active={(props.destination===item.id&&props.selectedTile===copy)||(props.departingRoom===item.id&&props.departingTile===copy)} reducedMotion={props.reducedMotion} />)}<ServiceProps /><UniversityPlaque /><OperatorAvatar onLoaded={copy===0?(props.onAvatarReady||props.onReady):undefined} reducedMotion={props.reducedMotion} exploring={props.phase==="corridor"} onSelect={()=>{if(props.phase==="corridor")props.onDoor("operator",copy);}} /><MaintenanceRobot reducedMotion={props.reducedMotion} position={[-2.5,0,2.8]} /></group>;
 }
 function World(props: Props) {
   const { gl } = useThree();
+  const assetsReady=useRef(false),renderedFrames=useRef(0),announced=useRef(false);
+  const markAssets=useCallback(()=>{assetsReady.current=true;props.onBootStep(3);},[props.onBootStep]);
+  useFrame(()=>{if(!assetsReady.current||announced.current)return;if(++renderedFrames.current>=2){announced.current=true;props.onReady();}});
 
 
   useEffect(() => {
@@ -206,12 +209,13 @@ function World(props: Props) {
     <hemisphereLight args={["#c9d8d1", "#5c5c50", 1.4]} />
     <PeriodicLights />
     <CameraRig {...props} />
-    {[-1,0,1].map(copy=><CorridorCopy key={copy} copy={copy} props={props} />)}
+    {[-1,0,1].map(copy=><CorridorCopy key={copy} copy={copy} props={{...props,onAvatarReady:markAssets}} />)}
   </PaintedSurfaces>;
 }
 
 export default function Corridor(props: Props) {
   return <Canvas shadows dpr={[1, 1.5]} camera={{ position: [0.5, 2.65, 13], fov: 62, near: 0.1, far: 125 }} gl={{ antialias: true, powerPreference: "low-power" }} onCreated={({ gl }) => {
+    props.onBootStep(2);
     gl.domElement.tabIndex=0;
     if (new URLSearchParams(window.location.search).get("scene-qa") === "1") gl.domElement.dataset.sceneQa = "true";
   }} aria-label="SYAHDAN, koridor 3D dengan enam sektor. Direktori tersedia untuk keyboard.">

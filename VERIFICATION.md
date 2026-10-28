@@ -1,5 +1,9 @@
 # Verifikasi NOVA NODE
 
+## Industrial startup screen
+
+Production build including TypeScript passed. `.qa/boot-test.cjs` passed desktop and touch mobile: the actual renderer checkpoint remains at 2/4 while the avatar request is held, no simulated progress, scroll/input lock, fade completion after assets and initial frames, room entry/return, and restarting 3D from Read Mode without camera drift. Reduced-motion and slow-asset escape were verified at 320px. Missing WebGL and no JavaScript both bypass the overlay and expose all six reading sectors. No uncaught browser errors were observed. Desktop/mobile screenshots were visually reviewed. CSS motion uses no extra assets, fonts or dependencies; timers, focus and scroll locks are cleaned up.
+
 ## Authentic CV enabled
 
 The owner's 366,449-byte PDF is published unchanged at `/documents/Syahdan_CV.pdf`. The source and published file are byte-identical. Production build including TypeScript passed. `.qa/cv-live-test.cjs` passed desktop and touch mobile: valid PDF status/MIME, header preview request and iframe, actual download with the expected filename and original bytes, closing preview removes the iframe, modal focus restoration, Operator's Quarters CV action, and Read Mode access without horizontal overflow or browser errors.
